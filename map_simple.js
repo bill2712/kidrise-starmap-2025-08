@@ -1,32 +1,24 @@
-// map_simple.js (最終修正版 - 解決 getBoundingClientRect 錯誤)
+// map_simple.js (最終修正版 - 指定繪圖容器)
 
 document.addEventListener("DOMContentLoaded", function() {
 
-    // 守衛 Celestial 是否存在
     if (typeof Celestial === "undefined") {
         console.error("核心星圖函式庫 Celestial 未能成功載入。");
         document.body.innerHTML = "<h1>錯誤：星圖核心元件載入失敗</h1>";
         return;
     }
 
-    // =======================================================
-    // ============== 關鍵修正 START ===============
-    // =======================================================
-    // 手動獲取星圖容器元素及其尺寸
-    const starmapContainer = document.getElementById("starmap");
+    const starmapContainer = document.getElementById("starmap-container");
     if (!starmapContainer) {
-        console.error("找不到 ID 為 'starmap' 的容器元素。");
+        console.error("找不到 ID 為 'starmap-container' 的容器元素。");
         return;
     }
     const width = starmapContainer.getBoundingClientRect().width;
-    // =======================================================
-    // =============== 關鍵修正 END ================
-    // =======================================================
 
-    // 一個最基本、最不容易出錯的星圖設定
     const celestialConfig = {
-        // 修正：不再使用 width: 0，而是傳入我們手動測量的確切寬度
-        width: width, 
+        width: width,
+        // 關鍵修正：明確告訴函式庫在哪個 div 中繪圖
+        container: "celestial-map", 
         projection: "stereographic",
         datapath: "/kidrise-starmap/data/",
         stars: {
@@ -53,7 +45,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     };
 
-    // 執行顯示
     try {
         Celestial.display(celestialConfig);
         console.log("Celestial.display() 執行成功！星圖應該已顯示。");
