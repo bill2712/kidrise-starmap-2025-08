@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>星空圖 - Kidrise 天文助手</title>
+    <link rel="stylesheet" href="/kidrise-starmap-2025-08/style.css">
+</head>
+<body>
+
+    <nav class="main-nav">
+        <a href="/kidrise-starmap/index.html" class="nav-link active">星空圖</a>
+        <a href="/kidrise-starmap/planner.html" class="nav-link">目標規劃</a>
+        <a href="/kidrise-starmap/knowledge.html" class="nav-link">天文知識</a>
+    </nav>
+
+    <div class="content-container">
+        <div class="section">
+            <h2>即時星空圖</h2>
+            
+            <div class="form-group" id="target-finder-group">
+                <label for="target-select">選擇觀測目標:</label>
+                <div class="select-wrapper">
+                    <select id="target-select">
+                        <option value="">-- 請選擇行星、星座或亮星 --</option>
+                        </select>
+                </div>
+                <button id="clear-target-button" class="hidden">清除標示</button>
+            </div>
+
+            <div id="starmap-container">
+                <div id="celestial-map"></div>
+                <p id="message"></p>
+            </div>
+             
+            <div class="map-controls-panel">
+                <div class="control-group">
+                    <h4>地理位置</h4>
+                    <p>更新您的所在位置，以查看對應的本地星空。</p>
+                    <button id="locationButton" class="control-button">📍 更新位置</button>
+                </div>
+                <div class="control-group">
+                    <h4>陀螺儀模式 (手機專用)</h4>
+                    <p>開啟後，將手機對向天空，星圖將隨之移動。</p>
+                    <button id="skyview-toggle" class="control-button">🔭 開啟陀螺儀</button>
+                </div>
+                <div class="control-group">
+                    <h4>視覺效果</h4>
+                    <p>為主要星座疊加上漂亮的藝術圖案，增添趣味。</p>
+                     <button id="toggle-art-button" class="control-button">🎨 顯示圖案</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/kidrise-starmap-2025-08/lib/d3.v4.min.js"></script>
+    <script src="/kidrise-starmap-2025-08/lib/d3-celestial.min.js"></script>
+    <script src="/kidrise-starmap-2025-08/map.js"></script>
+</body>
+</html>
