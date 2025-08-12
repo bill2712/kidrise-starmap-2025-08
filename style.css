@@ -45,3 +45,21 @@ select { width: 100%; box-sizing: border-box; padding: 12px 15px; border-radius:
 #zodiac-info-container { margin-top: 20px; background-color: #1a2366; padding: 20px; border-radius: 10px; }
 #zodiac-info-container h3 { color: #ffcc00; margin-top: 0; }
 #zodiac-info-container p { line-height: 1.8; }
+/* style.css */
+
+/* 按鈕組，讓多個按鈕可以在一個控制群組內並排 */
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* 簡化模式按鈕的樣式 */
+#simplify-toggle {
+    background-color: #27ae60; /* 綠色代表簡潔、清晰 */
+    color: white;
+}
+
+#simplify-toggle.active {
+    background-color: #e67e22; /* 啟用時變為橘色 */
+}
