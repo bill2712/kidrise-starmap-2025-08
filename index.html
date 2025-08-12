@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Kidrise 天文規劃助手 (最終版)</title>
+    <link rel="stylesheet" href="/kidrise-starmap/style.css">
+</head>
+<body>
+    <nav class="tab-nav">
+        <button class="tab-link active" data-tab="starmap">星空圖</button>
+        <button class="tab-link" data-tab="planner">目標規劃</button>
+        <button class="tab-link" data-tab="finder">目標搜尋</button>
+        <button class="tab-link" data-tab="knowledge">天文知識</button>
+    </nav>
+    <div class="content-container">
+        <div id="starmap" class="tab-content active">
+            <div class="section">
+                <div id="search-container">
+                    <input type="text" id="search-input" list="celestial-objects" placeholder="輸入星星、行星或星座名稱...">
+                    <datalist id="celestial-objects"></datalist>
+                    <button id="search-button">尋找</button>
+                    <button id="clear-button" class="hidden">清除</button>
+                </div>
+                <p class="intro-text">點擊「開啟陀螺儀」，將手機對向天空！</p>
+                <div id="starmap-container">
+                    <div id="celestial-map"></div>
+                    <div class="zoom-controls">
+                        <div id="zoom-in" class="zoom-button">+</div>
+                        <div id="zoom-out" class="zoom-button">-</div>
+                    </div>
+                    <div id="starmap-controls">
+                        <button id="locationButton" class="control-button">📍 更新位置</button>
+                        <button id="skyview-toggle" class="control-button">🔭 開啟陀螺儀</button>
+                        <button id="toggle-art-button" class="control-button">🎨 顯示圖案</button>
+                    </div>
+                    <p id="message"></p>
+                </div>
+            </div>
+        </div>
+        <div id="planner" class="tab-content">
+            <div class="section">
+                <h2>觀測地點管理</h2>
+                <p class="intro-text">選擇一個遠端天文台，或新增並儲存您自己的常用觀測點。</p>
+                <div class="form-group">
+                    <label for="observatory-select">iTelescope 遠端天文台:</label>
+                    <select id="observatory-select">
+                        <option value="">-- 請選擇一個天文台 --</option>
+                        <option value="T11,US">美國新墨西哥州 (T11)</option>
+                        <option value="T32,AU">澳洲 (T32)</option>
+                        <option value="T7,ES">西班牙 (T7)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>我的觀測點 (未來功能):</label>
+                    <div id="my-locations-list"><p style="color:#666;">(此處將顯示您儲存的地點)</p></div>
+                </div>
+            </div>
+            <div class="section">
+                <h2>天氣預報 (未來功能)</h2>
+                <p class="intro-text">此處將顯示觀測點未來幾天的雲量、透明度與視寧度預報。</p>
+            </div>
+             <div class="section">
+                <h2>我的觀測清單 (未來功能)</h2>
+                <p class="intro-text">您可以在搜尋或星圖中將天體加入此清單，方便規劃整晚的觀測行程。</p>
+            </div>
+        </div>
+        <div id="finder" class="tab-content">
+             <div class="section">
+                <h2>進階目標搜尋 (未來功能)</h2>
+                <p class="intro-text">根據您的觀測設備（裸眼、雙筒、望遠鏡）和觀測條件，為您推薦今晚的最佳目標。</p>
+            </div>
+        </div>
+        <div id="knowledge" class="tab-content">
+            <div class="section" id="knowledge-section">
+                <h2>天文知識庫 (未來功能)</h2>
+                <p class="intro-text">此處將會提供關於天文攝影、星體知識、光害等文章。</p>
+            </div>
+        </div>
+    </div>
+    <div id="storyModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <img id="modalImage" src="" alt="星座圖示" style="width: 100px; height: 100px; margin: 15px 0;">
+            <p id="modalStory"></p>
+        </div>
+    </div>
+    <div id="storybook-templates" style="display: none;">
+        <div class="constellation-card" data-name="獵戶座" data-img="/kidrise-starmap/images/orion.svg" data-story="獵戶座是夜空中最容易辨認的星座之一！他是一位勇猛的獵人，腰上繫著由三顆亮星組成的腰帶。在冬天，你可以很容易地找到他。">
+            <img src="/kidrise-starmap/images/orion.svg" alt="獵戶座"><h3>獵戶座</h3>
+        </div>
+        <div class="constellation-card" data-name="大熊座" data-img="/kidrise-starmap/images/ursamajor.svg" data-story="大熊座裡包含了最有名的「北斗七星」。在神話中，這是一隻被天神放到天上的大熊。北斗七星的斗口可以
