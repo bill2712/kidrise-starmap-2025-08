@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function() {
         projection: "stereographic",
         transform: "equatorial",
         background: { fill: "#000", stroke: "#000" },
-        datapath: "/kidrise-starmap/data/", // 修正路徑
+        datapath: "/kidrise-starmap-2025-08/data/", // 修正路徑
         interactive: true,
         zoombuttons: false,
         controls: true,
