@@ -18,7 +18,6 @@ select { width: 100%; box-sizing: border-box; padding: 12px 15px; border-radius:
 .control-button, .form-group button { border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s; }
 .control-button:active, .form-group button:active { transform: scale(0.95); }
 .form-group button { background-color: #e74c3c; color: white; margin-top: 10px; }
-.hidden { display: none !important; }
 /* --- 星空圖頁面 --- */
 #starmap-container { position: relative; width: 100%; height: 60vh; min-height: 400px; background-color: #000; border-radius: 15px; overflow: hidden; }
 #celestial-map { width: 100%; height: 100%; }
@@ -33,7 +32,6 @@ select { width: 100%; box-sizing: border-box; padding: 12px 15px; border-radius:
 #toggle-art-button.active { background-color: #e91e63; }
 #message { width: auto; max-width: 90%; text-align: center; position: absolute; top: 10px; left: 50%; transform: translateX(-50%); z-index: 10; padding: 8px 15px; font-weight: bold; color: #ffaf42; pointer-events: none; background-color: rgba(0,0,0,0.6); border-radius: 10px; }
 @keyframes blink { 50% { opacity: 0.3; } }
-.target-indicator { animation: blink 1.5s linear infinite; fill: none; stroke: #FFD700; stroke-width: 2px; }
 /* --- 天氣預報頁面 --- */
 #weather-forecast-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-top: 20px; }
 .weather-card { background-color: #1a2366; padding: 15px; border-radius: 10px; text-align: center; }
