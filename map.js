@@ -1,4 +1,4 @@
-// map.js (v3.0 - 在地化與 UX 升級)
+// map.js (v3.1 - 移除目標搜尋功能)
 document.addEventListener("DOMContentLoaded", function() {
 
     if (typeof Celestial === "undefined") { return console.error("核心星圖函式庫 Celestial 未能成功載入。"); }
@@ -8,14 +8,11 @@ document.addEventListener("DOMContentLoaded", function() {
         locationButton: document.getElementById('locationButton'),
         skyviewToggleButton: document.getElementById('skyview-toggle'),
         toggleArtButton: document.getElementById('toggle-art-button'),
-        targetSelect: document.getElementById('target-select'),
-        clearTargetButton: document.getElementById('clear-target-button'),
     };
 
     let state = {
         isSkyviewActive: false,
         isArtActive: false,
-        celestialData: [],
         orientationLastUpdate: 0
     };
 
@@ -25,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function() {
     };
 
     const celestialConfig = {
-        width: 0, projection: "stereographic", transform: "equatorial", background: { fill: "#000", stroke: "#000" }, datapath: "/kidrise-starmap-2025-08/data/", interactive: true, zoombuttons: false, controls: true,
+        width: 0, projection: "stereographic", transform: "equatorial", background: { fill: "#000", stroke: "#000" }, datapath: "/kidrise-starmap/data/", interactive: true, zoombuttons: false, controls: true,
         horizon: { show: true, stroke: "#3a8fb7", width: 1.5, cardinal: true, cardinalstyle: { fill: "#87CEEB", font: "bold 16px 'Helvetica', Arial, sans-serif", offset: 14 } },
         stars: { show: true, limit: 6, colors: true, style: { fill: "#ffffff", opacity: 1, width: 1.5 }, names: true, proper: true, namelimit: 2.5, namestyle: { fill: "#ddddff", font: "14px 'Helvetica', Arial, sans-serif" } },
         planets: { show: true, which: ["sol", "mer", "ven", "ter", "lun", "mar", "jup", "sat", "ura", "nep"], symbolType: "disk", symbols: { "sol": {symbol: "☉", fill: "#ffcc00"}, "lun": {symbol: "☽", fill: "#f0f0f0"}, "mer": {symbol: "☿", fill: "#a9a9a9"}, "ven": {symbol: "♀", fill: "#f0e68c"}, "mar": {symbol: "♂", fill: "#ff4500"}, "jup": {symbol: "♃", fill: "#c2b280"}, "sat": {symbol: "♄", fill: "#f5deb3"}, "ura": {symbol: "♅", fill: "#afeeee"}, "nep": {symbol: "♆", fill: "#4169e1"}, "ter": {symbol: "♁", fill: "#0077be"} }, style: { width: 2 }, namestyle: { fill: "#f0f0f0", font: "14px 'Helvetica', Arial, sans-serif", align: "center", baseline: "middle" } },
@@ -33,61 +30,85 @@ document.addEventListener("DOMContentLoaded", function() {
         mw: { show: true, style: { fill: "#ffffff", opacity: 0.15 } },
         callback: function (err) {
             if (err) { return console.error("Celestial Error:", err); }
-            buildTargetIndex();
+            // 簡化 callback，不再需要建立搜尋索引
             setTimeout(getLocation, 500);
         }
     };
 
     Celestial.display(celestialConfig);
 
-    ui.targetSelect.addEventListener('change', findTarget);
-    ui.clearTargetButton.addEventListener('click', clearTarget);
     ui.locationButton.addEventListener('click', getLocation);
     ui.skyviewToggleButton.addEventListener('click', toggleSkyView);
     ui.toggleArtButton.addEventListener('click', toggleConstellationArt);
 
-    function showMessage(message, duration = 2000) { ui.messageElement.innerText = message; if (duration > 0) setTimeout(() => { ui.messageElement.innerText = ''; }, duration); }
-
-    function buildTargetIndex() {
-        state.celestialData = [];
-        if (Celestial.constellations) { Celestial.constellations.forEach(c => state.celestialData.push({ name: c.name, type: "constellation", id: c.id, value: `con_${c.id}` })); }
-        if (Celestial.data?.stars?.features) { Celestial.data.stars.features.forEach(f => { const nm = f.properties?.name; if (nm && f.properties.mag < 2.5) state.celestialData.push({ name: nm, type: "star", id: f.id, value: `star_${nm}` }); }); }
-        ["Sun","Moon","Mercury","Venus","Mars","Jupiter","Saturn","Uranus","Neptune"].forEach(p => state.celestialData.push({ name: p, type: "planet", value: `planet_${p}` }));
-        
-        const planets = state.celestialData.filter(i => i.type === 'planet');
-        const constellations = state.celestialData.filter(i => i.type === 'constellation');
-        const stars = state.celestialData.filter(i => i.type === 'star');
-
-        ui.targetSelect.innerHTML += `<optgroup label="行星">${planets.map(item => `<option value="${item.value}">${item.name}</option>`).join('')}</optgroup>`;
-        ui.targetSelect.innerHTML += `<optgroup label="星座">${constellations.map(item => `<option value="${item.value}">${item.name}</option>`).join('')}</optgroup>`;
-        ui.targetSelect.innerHTML += `<optgroup label="亮星">${stars.map(item => `<option value="${item.value}">${item.name}</option>`).join('')}</optgroup>`;
+    function showMessage(message, duration = 2000) { 
+        ui.messageElement.innerText = message; 
+        if (duration > 0) setTimeout(() => { ui.messageElement.innerText = ''; }, duration); 
     }
 
-    function findTarget() {
-        const selectedValue = ui.targetSelect.value;
-        if (!selectedValue) return;
-
-        const [type, identifier] = selectedValue.split('_');
-        const item = state.celestialData.find(x => x.value === selectedValue);
-        if (!item) return;
-
-        const res = Celestial.search({ type: item.type, name: item.name, id: item.id });
-        if (!res) { showMessage(`抱歉，找不到 ${item.name} 的座標。`); return; }
-
-        Celestial.remove("search-target");
-        Celestial.add({ type: "Point", id: "search-target", geometry: { type: "Point", coordinates: [res.ra, res.dec] }, properties: { size: 20, style: { class: "target-indicator" } } });
-        Celestial.redraw();
-        ui.clearTargetButton.classList.remove("hidden");
-        showMessage(`為您標示 ${item.name}...`, 3000);
-    }
-
-    function clearTarget() {
-        Celestial.remove("search-target");
-        Celestial.redraw();
-        ui.targetSelect.value = "";
-        ui.clearTargetButton.classList.add("hidden");
-        showMessage("");
+    function toggleConstellationArt() {
+        state.isArtActive = !state.isArtActive;
+        ui.toggleArtButton.classList.toggle('active', state.isArtActive);
+        Celestial.apply({ constellations: state.isArtActive ? constellationArtConfig : { images: false } });
     }
     
-    // ... 此處省略 getLocation, toggleSkyView 等與之前版本相同的函式 ...
+    function toggleSkyView() {
+        state.isSkyviewActive = !state.isSkyviewActive;
+        const button = ui.skyviewToggleButton;
+        button.textContent = state.isSkyviewActive ? '🛑 關閉陀螺儀' : '🔭 開啟陀螺儀';
+        button.classList.toggle('active', state.isSkyviewActive);
+        if (state.isSkyviewActive) {
+            showMessage("正在開啟陀螺儀...", 0);
+            if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+                DeviceOrientationEvent.requestPermission().then(permissionState => {
+                    if (permissionState === 'granted') {
+                        window.addEventListener('deviceorientation', orientationHandler, { passive: true });
+                        Celestial.skyview({ "follow": "center" });
+                        showMessage("陀螺儀已開啟！");
+                    } else { 
+                        showMessage('方向感測器權限遭拒。');
+                        state.isSkyviewActive = false;
+                        button.textContent = '🔭 開啟陀螺儀';
+                        button.classList.remove('active');
+                    }
+                }).catch(console.error);
+            } else {
+                if (!('ondeviceorientation' in window)) { console.warn("此瀏覽器不支援 DeviceOrientationEvent。"); showMessage("此瀏覽器不支援陀螺儀。"); state.isSkyviewActive = false; button.textContent = '🔭 開啟陀螺儀'; button.classList.remove('active'); return; }
+                window.addEventListener('deviceorientation', orientationHandler, { passive: true });
+                Celestial.skyview({ "follow": "center" });
+                showMessage("陀螺儀已開啟！");
+            }
+        } else {
+            showMessage("陀螺儀已關閉。");
+            window.removeEventListener('deviceorientation', orientationHandler);
+            Celestial.skyview({ "follow": "none" });
+        }
+    }
+
+    function orientationHandler(evt) {
+      const now = performance.now();
+      if (now - state.orientationLastUpdate < 50) return; // ~20fps
+      state.orientationLastUpdate = now;
+      Celestial.skyview(evt);
+    }
+
+    function getLocation() {
+        if (navigator.geolocation) {
+            showMessage("正在獲取您的位置...", 0);
+            navigator.geolocation.getCurrentPosition(showPosition, showError, { timeout: 10000, enableHighAccuracy: true });
+        } else { 
+            showMessage("您的瀏覽器不支援定位。");
+        }
+    }
+
+    function showPosition(position) {
+        const { latitude, longitude } = position.coords;
+        Celestial.apply({ location: [latitude, longitude], local: true });
+        showMessage(`已更新為您的位置！`);
+    }
+
+    function showError(error) {
+        const errors = { 1: '您已拒絕位置請求。', 2: '無法獲取當前位置。', 3: '獲取位置超時。' };
+        showMessage(errors[error.code] || '獲取位置時發生未知錯誤。');
+    }
 });
