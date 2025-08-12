@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>星空圖 - Kidrise 天文助手</title>
-    <link rel="stylesheet" href="/kidrise-starmap-2025-08/style.css">
+    <link rel="stylesheet" href="/kidrise-starmap/style.css">
 </head>
 <body>
 
@@ -17,17 +17,8 @@
     <div class="content-container">
         <div class="section">
             <h2>即時星空圖</h2>
+            <p class="intro-text">使用下方的控制項來設定您的觀測情境，或直接在星圖上拖曳與縮放進行探索。</p>
             
-            <div class="form-group" id="target-finder-group">
-                <label for="target-select">選擇觀測目標:</label>
-                <div class="select-wrapper">
-                    <select id="target-select">
-                        <option value="">-- 請選擇行星、星座或亮星 --</option>
-                        </select>
-                </div>
-                <button id="clear-target-button" class="hidden">清除標示</button>
-            </div>
-
             <div id="starmap-container">
                 <div id="celestial-map"></div>
                 <p id="message"></p>
@@ -53,8 +44,8 @@
         </div>
     </div>
 
-    <script src="/kidrise-starmap-2025-08/lib/d3.v4.min.js"></script>
-    <script src="/kidrise-starmap-2025-08/lib/d3-celestial.min.js"></script>
-    <script src="/kidrise-starmap-2025-08/map.js"></script>
+    <script src="/kidrise-starmap/lib/d3.v4.min.js"></script>
+    <script src="/kidrise-starmap/lib/d3-celestial.min.js"></script>
+    <script src="/kidrise-starmap/map.js"></script>
 </body>
 </html>
