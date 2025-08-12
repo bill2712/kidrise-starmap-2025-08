@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>目標規劃 - Kidrise 天文助手</title>
+    <link rel="stylesheet" href="/kidrise-starmap/style.css">
+</head>
+<body>
+
+    <nav class="main-nav">
+        <a href="/kidrise-starmap/index.html" class="nav-link">星空圖</a>
+        <a href="/kidrise-starmap/planner.html" class="nav-link active">目標規劃</a>
+        <a href="/kidrise-starmap/knowledge.html" class="nav-link">天文知識</a>
+    </nav>
+
+    <div class="content-container">
+        <div class="section">
+            <h2>香港天氣預報</h2>
+            <p class="intro-text">選擇您所在的地區，查看香港天文台提供的未來九天天氣預測，判斷是否適合觀星。</p>
+            
+            <div class="form-group">
+                <label for="district-select">選擇香港地區:</label>
+                <div class="select-wrapper">
+                    <select id="district-select">
+                        <option value="">-- 請選擇地區 --</option>
+                        <option value="hk">港島及九龍</option>
+                        <option value="nt_east">新界東</option>
+                        <option value="nt_west">新界西</option>
+                        </select>
+                </div>
+            </div>
+
+            <div id="weather-forecast-container">
+                <p id="weather-placeholder">請選擇地區以載入天氣預報。</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/kidrise-starmap/planner.js"></script>
+</body>
+</html>
