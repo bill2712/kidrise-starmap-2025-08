@@ -24,6 +24,32 @@
 
     <div id="starmap"></div>
 
+
+      <div id="starmap" class="tab-content active">
+            <div class="section">
+                <div id="search-container">
+                    <input type="text" id="search-input" list="celestial-objects" placeholder="輸入星星、行星或星座名稱...">
+                    <datalist id="celestial-objects"></datalist>
+                    <button id="search-button">尋找</button>
+                    <button id="clear-button" class="hidden">清除</button>
+                </div>
+                <p class="intro-text">點擊「開啟陀螺儀」，將手機對向天空！</p>
+                <div id="starmap-container">
+                    <div id="celestial-map"></div>
+                    <div class="zoom-controls">
+                        <div id="zoom-in" class="zoom-button">+</div>
+                        <div id="zoom-out" class="zoom-button">-</div>
+                    </div>
+                    <div id="starmap-controls">
+                        <button id="locationButton" class="control-button">📍 更新位置</button>
+                        <button id="skyview-toggle" class="control-button">🔭 開啟陀螺儀</button>
+                        <button id="toggle-art-button" class="control-button">🎨 顯示圖案</button>
+                    </div>
+                    <p id="message"></p>
+                </div>
+            </div>
+        </div>
+
     <script src="/kidrise-starmap/lib/d3.v4.min.js"></script>
     <script src="/kidrise-starmap/lib/d3-celestial.min.js"></script>
     <script src="/kidrise-starmap/script.js"></script>
