@@ -338,3 +338,141 @@ select { width: 100%; box-sizing: border-box; padding: 12px 15px; border-radius:
 .reco-bad .status { color: #e74c3c; }
 .reco-ok { background-color: rgba(241, 196, 15, 0.2); border-color: #f1c40f; }
 .reco-ok .status { color: #f1c40f; }
+
+/* --- 全新知識庫頁面樣式 (Knowledge Page) --- */
+
+.knowledge-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.knowledge-tab-link {
+    padding: 10px 20px;
+    cursor: pointer;
+    background: none;
+    border: 2px solid #3a8fb7;
+    border-radius: 20px;
+    color: #87CEEB;
+    font-size: 1em;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.knowledge-tab-link:hover {
+    background-color: #3a8fb7;
+    color: #fff;
+}
+
+.knowledge-tab-link.active {
+    background-color: #ffcc00;
+    border-color: #ffcc00;
+    color: #000;
+}
+
+.knowledge-tab-content {
+    display: none;
+    animation: fadeIn 0.5s;
+}
+
+.knowledge-tab-content.active {
+    display: block;
+}
+
+/* 知識卡片樣式 */
+.knowledge-card {
+    background-color: rgba(26, 35, 102, 0.5);
+    border-radius: 10px;
+    padding: 25px;
+    margin-bottom: 20px;
+    border-left: 5px solid #3a8fb7;
+}
+.knowledge-card h3 {
+    margin-top: 0;
+    color: #87CEEB;
+}
+.knowledge-card p, .knowledge-card ul {
+    line-height: 1.8;
+    color: #ccc;
+}
+.knowledge-card ul {
+    padding-left: 20px;
+}
+.knowledge-card strong {
+    color: #ffcc00;
+}
+
+/* 十二星座選擇器樣式 */
+.zodiac-selector {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 15px;
+    margin: 25px 0;
+}
+.zodiac-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    border: 2px solid transparent;
+}
+.zodiac-icon:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+.zodiac-icon.active {
+    border-color: #ffcc00;
+    box-shadow: 0 0 15px rgba(255, 204, 0, 0.5);
+}
+.zodiac-icon img {
+    width: 48px;
+    height: 48px;
+}
+.zodiac-icon span {
+    margin-top: 5px;
+    font-size: 0.9em;
+    color: #ccc;
+}
+
+.zodiac-info-container {
+    margin-top: 20px;
+    background-color: #1a2366;
+    padding: 25px;
+    border-radius: 10px;
+    min-height: 150px;
+}
+.zodiac-info-container h3 {
+    color: #ffcc00;
+    margin-top: 0;
+}
+.zodiac-info-container h4 {
+    color: #87CEEB;
+    margin-top: 20px;
+    border-bottom: 1px solid #3a8fb7;
+    padding-bottom: 5px;
+}
+.zodiac-info-container p {
+    line-height: 1.8;
+}
+#zodiac-placeholder {
+    color: #666;
+    text-align: center;
+    padding: 40px 0;
+}
+
+@media (max-width: 768px) {
+    .zodiac-selector {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+@media (max-width: 480px) {
+    .zodiac-selector {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
