@@ -1,4 +1,4 @@
-// planner.js (v5.0 - 完全遵循 HKO 官方 API 文件)
+// planner.js (v5.1 - 重新啟用 CORS 代理以解決 API 請求問題)
 
 document.addEventListener("DOMContentLoaded", function() {
     // --- UI 元素定義 ---
@@ -8,11 +8,19 @@ document.addEventListener("DOMContentLoaded", function() {
     const forecastContainer = document.getElementById('forecast-container');
     const forecastPlaceholder = document.getElementById('forecast-placeholder');
 
-    // --- 根據官方文件設定 API ---
-    const API_BASE_URL = "https://data.weather.gov.hk/weatherAPI/opendata/weather.php";
-    const LANG = "tc"; // 語言：繁體中文
+    // --- API URLs (關鍵修正) ---
+    // 1. 重新定義代理伺服器
+    const PROXY_URL = 'https://corsproxy.io/?';
 
-    let realtimeDataStore = null; // 用於緩存即時天氣數據
+    // 2. 定義官方的 API 端點
+    const API_BASE_URL = "https://data.weather.gov.hk/weatherAPI/opendata/weather.php";
+    const LANG = "tc";
+
+    // 3. 組合出最終需要使用的 API 連結
+    const REALTIME_API_URL = PROXY_URL + encodeURIComponent(`${API_BASE_URL}?dataType=rhrread&lang=${LANG}`);
+    const FORECAST_API_URL = PROXY_URL + encodeURIComponent(`${API_BASE_URL}?dataType=fnd&lang=${LANG}`);
+    
+    let realtimeDataStore = null;
 
     // =============================================
     //  功能一：分區即時天氣 (dataType=rhrread)
@@ -26,9 +34,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         const tempData = realtimeDataStore.temperature.data.find(s => s.place === stationName);
         const humidityData = realtimeDataStore.humidity.data.find(s => s.place === stationName);
-        // 風速和風向數據可能不在同一個站點，需要分別尋找
         const windData = realtimeDataStore.wind.data.find(s => s.station === tempData?.station);
-
         const updateTime = new Date(realtimeDataStore.updateTime).toLocaleString('zh-HK');
         const iconId = realtimeDataStore.icon[0];
 
@@ -65,14 +71,18 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function initRealtimeWeather() {
-        const realtimeApiUrl = `${API_BASE_URL}?dataType=rhrread&lang=${LANG}`;
+        realtimePlaceholder.innerText = '正在從香港天文台獲取站點列表...';
         
-        fetch(realtimeApiUrl)
-            .then(response => response.json())
+        // 使用加上代理的 URL
+        fetch(REALTIME_API_URL)
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP 錯誤! 狀態: ${response.status}`);
+                return response.json();
+            })
             .then(data => {
                 realtimeDataStore = data;
                 if (data && data.temperature && data.temperature.data) {
-                    stationSelect.innerHTML = '<option value="">-- 請選擇地區 --</option>'; // 清空並加入預設選項
+                    stationSelect.innerHTML = '<option value="">-- 請選擇地區 --</option>';
                     data.temperature.data.forEach(station => {
                         const option = document.createElement('option');
                         option.value = station.place;
@@ -97,17 +107,18 @@ document.addEventListener("DOMContentLoaded", function() {
     //  功能二：未來九日天氣預報 (dataType=fnd)
     // =============================================
     function initForecastWeather() {
-        const forecastApiUrl = `${API_BASE_URL}?dataType=fnd&lang=${LANG}`;
-        
-        fetch(forecastApiUrl)
-            .then(response => response.json())
+        // 使用加上代理的 URL
+        fetch(FORECAST_API_URL)
+            .then(response => {
+                if (!response.ok) throw new Error(`HTTP 錯誤! 狀態: ${response.status}`);
+                return response.json();
+            })
             .then(data => {
-                forecastContainer.innerHTML = ''; // 清空 placeholder
+                forecastContainer.innerHTML = '';
                 if (data && data.weatherForecast) {
                     data.weatherForecast.forEach(day => {
                         const card = document.createElement('div');
                         card.className = 'forecast-day-card';
-                        
                         const date = `${day.forecastDate.slice(0,4)}-${day.forecastDate.slice(4,6)}-${day.forecastDate.slice(6,8)}`;
                         const iconUrl = `https://www.hko.gov.hk/images/wxicon/pic${day.ForecastIcon}.png`;
 
