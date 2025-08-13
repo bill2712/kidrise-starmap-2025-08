@@ -476,3 +476,40 @@ select { width: 100%; box-sizing: border-box; padding: 12px 15px; border-radius:
         grid-template-columns: repeat(3, 1fr);
     }
 }
+/* --- index.html 教學區塊樣式 --- */
+
+.guide-section h2 {
+    margin-bottom: 30px;
+}
+
+.guide-step {
+    margin-bottom: 25px;
+    padding-bottom: 25px;
+    border-bottom: 1px solid rgba(58, 143, 183, 0.3);
+}
+
+.guide-section > .guide-step:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.guide-step h4 {
+    color: #87CEEB;
+    font-size: 1.2em;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.guide-step p, .guide-step li {
+    line-height: 1.8;
+    color: #ccc;
+}
+
+.guide-step ul, .guide-step ol {
+    padding-left: 25px;
+}
+
+.guide-step strong {
+    color: #ffcc00;
+}
