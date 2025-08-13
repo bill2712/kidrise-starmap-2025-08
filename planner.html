@@ -16,26 +16,29 @@
 
     <div class="content-container">
         <div class="section">
-            <h2>香港天氣預報</h2>
-            <p class="intro-text">選擇您所在的地區，查看香港天文台提供的未來九天天氣預測，判斷是否適合觀星。</p>
-            
+            <h2>香港分區天氣實況</h2>
+            <p class="intro-text">選擇觀測地點，查看香港天文台提供的即時天氣數據，判斷是否適合觀星。</p>
             <div class="form-group">
-                <label for="district-select">選擇香港地區:</label>
+                <label for="district-select">選擇天氣站點:</label>
                 <div class="select-wrapper">
                     <select id="district-select">
                         <option value="">-- 請選擇地區 --</option>
-                        <option value="hk">港島及九龍</option>
-                        <option value="nt_east">新界東</option>
-                        <option value="nt_west">新界西</option>
-                        </select>
+                    </select>
                 </div>
             </div>
-
-            <div id="weather-forecast-container">
-                <p id="weather-placeholder">請選擇地區以載入天氣預報。</p>
+            <div id="weather-display-container">
+                <p id="weather-placeholder">請選擇一個地區以載入即時天氣狀況。</p>
             </div>
         </div>
-    </div>
+
+        <div class="section">
+            <h2>今日天文現象 (香港時間)</h2>
+            <p class="intro-text">資料來源：香港天文台</p>
+            <div id="astro-phenomena-container">
+                <p id="astro-placeholder">正在載入天文數據...</p>
+                </div>
+        </div>
+        </div>
 
     <script src="/kidrise-starmap-2025-08/planner.js"></script>
 </body>
