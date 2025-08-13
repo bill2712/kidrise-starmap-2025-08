@@ -1,4 +1,4 @@
-// planner.js (v5.1 - 重新啟用 CORS 代理以解決 API 請求問題)
+// planner.js (v5.2 - 官方文件校準版)
 
 document.addEventListener("DOMContentLoaded", function() {
     // --- UI 元素定義 ---
@@ -8,19 +8,10 @@ document.addEventListener("DOMContentLoaded", function() {
     const forecastContainer = document.getElementById('forecast-container');
     const forecastPlaceholder = document.getElementById('forecast-placeholder');
 
-    // --- API URLs (關鍵修正) ---
-    // 1. 重新定義代理伺服器
-    const PROXY_URL = 'https://corsproxy.io/?';
-
-    // 2. 定義官方的 API 端點
+    // --- 根據官方文件設定 API ---
+    // API 基礎位置 (文件第 6 頁)
     const API_BASE_URL = "https://data.weather.gov.hk/weatherAPI/opendata/weather.php";
-    const LANG = "tc";
-
-    // 3. 組合出最終需要使用的 API 連結
-    const REALTIME_API_URL = PROXY_URL + encodeURIComponent(`${API_BASE_URL}?dataType=rhrread&lang=${LANG}`);
-    const FORECAST_API_URL = PROXY_URL + encodeURIComponent(`${API_BASE_URL}?dataType=fnd&lang=${LANG}`);
-    
-    let realtimeDataStore = null;
+    const LANG = "tc"; // 語言：繁體中文
 
     // =============================================
     //  功能一：分區即時天氣 (dataType=rhrread)
@@ -32,9 +23,9 @@ document.addEventListener("DOMContentLoaded", function() {
             return;
         }
 
+        // 根據文件第 8, 10 頁，數據在 data 陣列中
         const tempData = realtimeDataStore.temperature.data.find(s => s.place === stationName);
         const humidityData = realtimeDataStore.humidity.data.find(s => s.place === stationName);
-        const windData = realtimeDataStore.wind.data.find(s => s.station === tempData?.station);
         const updateTime = new Date(realtimeDataStore.updateTime).toLocaleString('zh-HK');
         const iconId = realtimeDataStore.icon[0];
 
@@ -58,29 +49,26 @@ document.addEventListener("DOMContentLoaded", function() {
                         <div class="label">相對濕度</div>
                         <div class="value">${humidityData ? humidityData.value : 'N/A'} %</div>
                     </div>
-                    <div class="weather-metric">
-                        <div class="label">風向</div>
-                        <div class="value">${windData ? windData.direction : 'N/A'}</div>
-                    </div>
-                     <div class="weather-metric">
-                        <div class="label">風速</div>
-                        <div class="value">${windData ? `${windData.mean} km/h` : 'N/A'}</div>
-                    </div>
                 </div>
             </div>`;
     }
 
+    let realtimeDataStore = null; // 用於緩存即時天氣數據
+
     function initRealtimeWeather() {
-        realtimePlaceholder.innerText = '正在從香港天文台獲取站點列表...';
+        // 根據文件第 6 頁，構建 rhrread 的 URL
+        const realtimeApiUrl = `${API_BASE_URL}?dataType=rhrread&lang=${LANG}`;
         
-        // 使用加上代理的 URL
-        fetch(REALTIME_API_URL)
+        realtimePlaceholder.innerText = '正在從香港天文台獲取站點列表...';
+
+        fetch(realtimeApiUrl) // 直接呼叫官方 API，不使用代理
             .then(response => {
                 if (!response.ok) throw new Error(`HTTP 錯誤! 狀態: ${response.status}`);
                 return response.json();
             })
             .then(data => {
                 realtimeDataStore = data;
+                // 根據文件第 10 頁，溫度數據位於 data.temperature.data
                 if (data && data.temperature && data.temperature.data) {
                     stationSelect.innerHTML = '<option value="">-- 請選擇地區 --</option>';
                     data.temperature.data.forEach(station => {
@@ -91,12 +79,12 @@ document.addEventListener("DOMContentLoaded", function() {
                     });
                     realtimePlaceholder.innerText = '請選擇一個地區以載入即時天氣狀況。';
                 } else {
-                    realtimePlaceholder.innerText = '無法獲取天氣站點列表。';
+                    realtimePlaceholder.innerText = '無法解析天氣站點列表。';
                 }
             })
             .catch(error => {
                 console.error('即時天氣 API 錯誤:', error);
-                realtimePlaceholder.innerText = '載入即時天氣數據失敗。';
+                realtimePlaceholder.innerText = '載入即時天氣數據失敗。\n可能是 CORS 限制，請檢查開發者工具 Console。';
             });
         stationSelect.addEventListener('change', function() {
             displayRealtimeWeather(this.value);
@@ -107,18 +95,22 @@ document.addEventListener("DOMContentLoaded", function() {
     //  功能二：未來九日天氣預報 (dataType=fnd)
     // =============================================
     function initForecastWeather() {
-        // 使用加上代理的 URL
-        fetch(FORECAST_API_URL)
+        // 根據文件第 6 頁，構建 fnd 的 URL
+        const forecastApiUrl = `${API_BASE_URL}?dataType=fnd&lang=${LANG}`;
+        
+        fetch(forecastApiUrl) // 直接呼叫官方 API，不使用代理
             .then(response => {
                 if (!response.ok) throw new Error(`HTTP 錯誤! 狀態: ${response.status}`);
                 return response.json();
             })
             .then(data => {
                 forecastContainer.innerHTML = '';
+                // 根據文件第 7 頁，預報數據位於 data.weatherForecast
                 if (data && data.weatherForecast) {
                     data.weatherForecast.forEach(day => {
                         const card = document.createElement('div');
                         card.className = 'forecast-day-card';
+                        
                         const date = `${day.forecastDate.slice(0,4)}-${day.forecastDate.slice(4,6)}-${day.forecastDate.slice(6,8)}`;
                         const iconUrl = `https://www.hko.gov.hk/images/wxicon/pic${day.ForecastIcon}.png`;
 
