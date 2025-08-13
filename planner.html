@@ -9,16 +9,24 @@
 <body>
 
     <nav class="main-nav">
-        <a href="/kidrise-starmap-2025-08/index2.html" class="nav-link">星空圖</a>
+        <a href="/kidrise-starmap-2025-08/index.html" class="nav-link">星空圖</a>
         <a href="/kidrise-starmap-2025-08/planner.html" class="nav-link active">目標規劃</a>
         <a href="/kidrise-starmap-2025-08/compass.html" class="nav-link">實時指南針</a>
         <a href="/kidrise-starmap-2025-08/knowledge.html" class="nav-link">天文知識</a>
     </nav>
 
     <div class="content-container">
+
         <div class="section">
-            <h2>香港分區即時天氣</h2>
-            <p class="intro-text">選擇觀測地點，查看香港天文台提供的即時天氣數據。資料約每 10 分鐘更新一次。</p>
+            <h2>今晚觀星建議摘要</h2>
+            <div id="recommendation-card">
+                <p id="reco-placeholder">正在綜合分析天文台數據，請稍候...</p>
+                </div>
+        </div>
+
+        <div class="section">
+            <h2>香港分區即時天氣 (詳細數據)</h2>
+            <p class="intro-text">您也可以手動選擇特定地點，查看詳細的即時天氣數據。</p>
             <div class="form-group">
                 <label for="station-select">選擇天氣站點:</label>
                 <div class="select-wrapper">
@@ -34,7 +42,7 @@
 
         <div class="section">
             <h2>未來九日天氣預報</h2>
-            <p class="intro-text">查看全港未來九天的天氣趨勢，包括雲量、溫度及濕度，以規劃最佳觀星時機。</p>
+            <p class="intro-text">查看全港未來九天的天氣趨勢，以規劃最佳觀星時機。</p>
             <div id="forecast-container">
                 <p id="forecast-placeholder">正在載入九日天氣預報...</p>
             </div>
