@@ -57,7 +57,7 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 
-    <script>
+ <script>
         function isMobileDevice() {
             return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
         }
@@ -66,18 +66,27 @@
             // -- 手機版 --
             console.log("偵測到行動裝置，載入 VirtualSky 沉浸式星圖...");
             
-            const virtualSkyLib = document.createElement('script');
-            virtualSkyLib.src = '/kidrise-starmap-2025-08/virtualsky.js';
-            document.body.appendChild(virtualSkyLib);
+            // 1. 建立 stuquery.js (電池) 的 script 標籤
+            const stuQueryLib = document.createElement('script');
+            stuQueryLib.src = 'https://slowe.github.io/VirtualSky/stuquery.js'; // 核心函式庫
+            document.body.appendChild(stuQueryLib);
 
-            virtualSkyLib.onload = function() {
-                const mobileMapScript = document.createElement('script');
-                mobileMapScript.src = '/kidrise-starmap-2025-08/mobile_map.js';
-                document.body.appendChild(mobileMapScript);
+            // 2. 確保在 stuquery.js 載入後，才載入 virtualsky.js (玩具)
+            stuQueryLib.onload = function() {
+                const virtualSkyLib = document.createElement('script');
+                virtualSkyLib.src = '/kidrise-starmap-2025-08/virtualsky.js';
+                document.body.appendChild(virtualSkyLib);
+
+                // 3. 確保在 virtualsky.js 載入後，才載入我們自己的手機版腳本
+                virtualSkyLib.onload = function() {
+                    const mobileMapScript = document.createElement('script');
+                    mobileMapScript.src = '/kidrise-starmap-2025-08/mobile_map.js';
+                    document.body.appendChild(mobileMapScript);
+                };
             };
 
         } else {
-            // -- 電腦版 --
+            // -- 電腦版 (載入邏輯保持不變) --
             console.log("偵測到電腦裝置，載入 d3-celestial 數據星圖...");
             
             const d3Lib = document.createElement('script');
