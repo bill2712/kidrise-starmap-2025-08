@@ -11,27 +11,38 @@
     <nav class="main-nav">
         <a href="/kidrise-starmap-2025-08/index2.html" class="nav-link">星空圖</a>
         <a href="/kidrise-starmap-2025-08/planner.html" class="nav-link">目標規劃</a>
-        <a href="/kidrise-starmap-2025-08/knowledge.html" class="nav-link active">天文知識</a>
         <a href="/kidrise-starmap-2025-08/compass.html" class="nav-link">實時指南針</a>
-
+        <a href="/kidrise-starmap-2025-08/knowledge.html" class="nav-link active">天文知識</a>
     </nav>
 
     <div class="content-container">
         <div class="section">
-            <h2>十二星座物語</h2>
-            <p class="intro-text">黃道十二星座是太陽在天球上經過的星座。選擇一個星座，了解它的神話故事與觀測資訊。</p>
-            
-            <div class="form-group">
-                <label for="zodiac-select">選擇星座:</label>
-                <div class="select-wrapper">
-                    <select id="zodiac-select">
-                        <option value="">-- 請選擇星座 --</option>
-                        </select>
-                </div>
+            <div class="knowledge-tabs">
+                <button class="knowledge-tab-link active" data-tab="basics">基礎知識</button>
+                <button class="knowledge-tab-link" data-tab="solar-system">太陽系</button>
+                <button class="knowledge-tab-link" data-tab="deep-sky">深空天體</button>
+                <button class="knowledge-tab-link" data-tab="zodiac">黃道十二星座</button>
             </div>
 
-            <div id="zodiac-info-container">
-                <p id="zodiac-placeholder">請選擇一個星座以顯示詳細資訊。</p>
+            <div class="knowledge-content">
+                <div id="basics" class="knowledge-tab-content active">
+                    </div>
+
+                <div id="solar-system" class="knowledge-tab-content">
+                    </div>
+
+                <div id="deep-sky" class="knowledge-tab-content">
+                    </div>
+
+                <div id="zodiac" class="knowledge-tab-content">
+                    <h2>黃道十二星座物語</h2>
+                    <p class="intro-text">黃道是太陽在天球上一年中走過的路徑，它貫穿了十二個我們所熟知的星座。點擊下方的星座圖示，探索它們的古老傳說與尋找秘訣。</p>
+                    <div id="zodiac-selector" class="zodiac-selector">
+                        </div>
+                    <div id="zodiac-info-container" class="zodiac-info-container">
+                        <p id="zodiac-placeholder">請選擇一個星座以顯示詳細資訊。</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
