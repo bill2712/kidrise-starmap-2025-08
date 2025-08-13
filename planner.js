@@ -1,4 +1,4 @@
-// planner.js (v6.1 - 為所有官方 API 重新啟用 CORS 代理)
+// planner.js (v5.2 + 觀星建議 + CORS 代理修正)
 
 document.addEventListener("DOMContentLoaded", function() {
     // --- UI 元素定義 ---
@@ -12,20 +12,81 @@ document.addEventListener("DOMContentLoaded", function() {
         recoPlaceholder: document.getElementById('reco-placeholder')
     };
 
-    // --- API URLs (關鍵修正：重新加入代理) ---
+    // --- API URLs ---
     const PROXY_URL = 'https://corsproxy.io/?';
     const API_WEATHER_BASE = "https://data.weather.gov.hk/weatherAPI/opendata/weather.php";
     const API_OPENDATA_BASE = "https://data.weather.gov.hk/weatherAPI/opendata/opendata.php";
     const LANG = "tc";
 
-    // 將所有官方 URL 編碼並與代理組合
-    const API_URLS = {
-        realtime: PROXY_URL + encodeURIComponent(`${API_WEATHER_BASE}?dataType=rhrread&lang=${LANG}`),
-        forecast: PROXY_URL + encodeURIComponent(`${API_WEATHER_BASE}?dataType=fnd&lang=${LANG}`),
-        visibility: PROXY_URL + encodeURIComponent(`${API_OPENDATA_BASE}?dataType=LTMV&lang=${LANG}`)
-    };
+    let realtimeDataStore = null;
 
-    // --- 觀星地點數據 (保持不變) ---
+    // =======================================================
+    //  原有功能 (已加入 CORS 代理)
+    // =======================================================
+
+    function initRealtimeWeather() {
+        const realtimeApiUrl = PROXY_URL + encodeURIComponent(`${API_WEATHER_BASE}?dataType=rhrread&lang=${LANG}`);
+        ui.realtimePlaceholder.innerText = '正在從香港天文台獲取站點列表...';
+        fetch(realtimeApiUrl)
+            .then(response => response.json())
+            .then(data => {
+                realtimeDataStore = data;
+                if (data && data.temperature && data.temperature.data) {
+                    ui.stationSelect.innerHTML = '<option value="">-- 請選擇地區 --</option>';
+                    data.temperature.data.forEach(station => {
+                        const option = document.createElement('option');
+                        option.value = station.place;
+                        option.textContent = station.place;
+                        ui.stationSelect.appendChild(option);
+                    });
+                    ui.realtimePlaceholder.innerText = '請選擇一個地區以載入即時天氣狀況。';
+                } else { ui.realtimePlaceholder.innerText = '無法獲取天氣站點列表。'; }
+            })
+            .catch(error => {
+                console.error('即時天氣 API 錯誤:', error);
+                ui.realtimePlaceholder.innerText = '載入即時天氣數據失敗。';
+            });
+        ui.stationSelect.addEventListener('change', function() {
+            displayRealtimeWeather(this.value);
+        });
+    }
+
+    function initForecastWeather() {
+        const forecastApiUrl = PROXY_URL + encodeURIComponent(`${API_WEATHER_BASE}?dataType=fnd&lang=${LANG}`);
+        fetch(forecastApiUrl)
+            .then(response => response.json())
+            .then(data => {
+                ui.forecastContainer.innerHTML = '';
+                if (data && data.weatherForecast) {
+                    data.weatherForecast.forEach(day => {
+                        const card = document.createElement('div');
+                        card.className = 'forecast-day-card';
+                        const date = `${day.forecastDate.slice(0,4)}-${day.forecastDate.slice(4,6)}-${day.forecastDate.slice(6,8)}`;
+                        const iconUrl = `https://www.hko.gov.hk/images/wxicon/pic${day.ForecastIcon}.png`;
+                        card.innerHTML = `<div class="date">${date}</div><div class="weekday">${day.week}</div><img src="${iconUrl}" alt="${day.forecastWeather}"><div class="temp">${day.forecastMintemp.value}°C / ${day.forecastMaxtemp.value}°C</div><div class="humidity">${day.forecastMinrh.value}% - ${day.forecastMaxrh.value}%</div><div class="weather-desc">${day.forecastWeather}</div>`;
+                        ui.forecastContainer.appendChild(card);
+                    });
+                } else { ui.forecastPlaceholder.innerText = '無法獲取九日天氣預報。'; }
+            })
+            .catch(error => {
+                console.error('九日預報 API 錯誤:', error);
+                ui.forecastPlaceholder.innerText = '載入九日天氣預報失敗。';
+            });
+    }
+    
+    function displayRealtimeWeather(stationName) {
+        if (!realtimeDataStore || !stationName) { return; }
+        const tempData = realtimeDataStore.temperature.data.find(s => s.place === stationName);
+        const humidityData = realtimeDataStore.humidity.data.find(s => s.place === stationName);
+        const updateTime = new Date(realtimeDataStore.updateTime).toLocaleString('zh-HK');
+        const iconId = realtimeDataStore.icon[0];
+        ui.realtimeContainer.innerHTML = `<div class="weather-card visible"><div class="weather-header"><div class="location"><h3>${stationName}</h3><p>更新時間: ${updateTime}</p></div><div class="icon"><img src="https://www.hko.gov.hk/images/wxicon/pic${iconId}.png" alt="Weather Icon"></div></div><div class="weather-body"><div class="weather-metric"><div class="label">溫度</div><div class="value">${tempData ? tempData.value : 'N/A'} °C</div></div><div class="weather-metric"><div class="label">相對濕度</div><div class="value">${humidityData ? humidityData.value : 'N/A'} %</div></div></div></div>`;
+    }
+
+    // =======================================================
+    //  新增功能：觀星建議摘要
+    // =======================================================
+    
     const DARK_SKY_LOCATIONS = [
         { name: "西貢萬宜水庫東壩", station: "西貢" },
         { name: "大嶼山南部 (例如：水口)", station: "長洲" },
@@ -34,46 +95,28 @@ document.addEventListener("DOMContentLoaded", function() {
         { name: "大帽山", station: "荃灣" }
     ];
 
-    /**
-     * 核心分析函式 (保持不變)
-     */
     function analyzeStargazingConditions(forecastData, realtimeData, visibilityData) {
         const tonightForecast = forecastData.weatherForecast[0];
-        let recommendation = {
-            status: "不建議",
-            summary: "",
-            details: `今晚整體天氣預測：${tonightForecast.forecastWeather}`,
-            cssClass: "reco-bad"
-        };
+        let recommendation = { status: "不建議", summary: "", details: `今晚整體天氣預測：${tonightForecast.forecastWeather}`, cssClass: "reco-bad" };
 
         if (tonightForecast.forecastWeather.includes("雨") || tonightForecast.forecastWeather.includes("雷")) {
             recommendation.summary = "今晚預測有雨或雷暴，雲層將完全遮蔽天空，非常不適合觀星。";
-        }
-        else if (tonightForecast.forecastWeather.includes("多雲")) {
+        } else if (tonightForecast.forecastWeather.includes("多雲")) {
             recommendation.summary = "今晚預測多雲，大部分時間天空將被雲層覆蓋，觀測條件不佳。";
-            recommendation.status = "不建議";
-        }
-        else if (tonightForecast.forecastWeather.includes("晴") || tonightForecast.forecastWeather.includes("良好")) {
-            let bestLocation = null;
-            let bestScore = -1;
-
+        } else if (tonightForecast.forecastWeather.includes("晴") || tonightForecast.forecastWeather.includes("良好")) {
+            let bestLocation = null, bestScore = -1000;
             DARK_SKY_LOCATIONS.forEach(loc => {
                 const temp = realtimeData.temperature.data.find(s => s.place === loc.station);
                 const humidity = realtimeData.humidity.data.find(s => s.place === loc.station);
-                const visData = visibilityData.data.find(s => s[1] === loc.station);
-
-                if (temp && humidity && visData) {
-                    const humidityValue = humidity.value;
-                    const visibilityValue = visData[2];
-                    const score = visibilityValue - humidityValue;
-
+                const vis = visibilityData.data.find(s => s[1] === loc.station);
+                if (temp && humidity && vis) {
+                    const score = vis[2] - humidity.value;
                     if (score > bestScore) {
                         bestScore = score;
-                        bestLocation = { name: loc.name, temp: temp.value, humidity: humidity.value, visibility: visibilityValue };
+                        bestLocation = { name: loc.name, temp: temp.value, humidity: humidity.value, visibility: vis[2] };
                     }
                 }
             });
-
             if (bestLocation) {
                 recommendation.status = "建議";
                 recommendation.cssClass = "reco-good";
@@ -94,67 +137,25 @@ document.addEventListener("DOMContentLoaded", function() {
         ui.recommendationCard.innerHTML = `<h3 class="status">${recommendation.status}</h3><p class="summary">${recommendation.summary}</p><p class="details">${recommendation.details.replace(/\n/g, '<br>')}</p>`;
     }
 
-    /**
-     * 初始化函式 (保持不變)
-     */
-    function initializePlanner() {
+    function initStargazingAnalysis() {
+        const forecastUrl = PROXY_URL + encodeURIComponent(`${API_WEATHER_BASE}?dataType=fnd&lang=${LANG}`);
+        const realtimeUrl = PROXY_URL + encodeURIComponent(`${API_WEATHER_BASE}?dataType=rhrread&lang=${LANG}`);
+        const visibilityUrl = PROXY_URL + encodeURIComponent(`${API_OPENDATA_BASE}?dataType=LTMV&lang=${LANG}`);
+
         Promise.all([
-            fetch(API_URLS.forecast).then(res => res.json()),
-            fetch(API_URLS.realtime).then(res => res.json()),
-            fetch(API_URLS.visibility).then(res => res.json())
+            fetch(forecastUrl).then(res => res.json()),
+            fetch(realtimeUrl).then(res => res.json()),
+            fetch(visibilityUrl).then(res => res.json())
         ]).then(([forecastData, realtimeData, visibilityData]) => {
             analyzeStargazingConditions(forecastData, realtimeData, visibilityData);
-            populateStationSelect(realtimeData);
-            // 九日天氣預報區塊也需要填充
-            populateForecastDisplay(forecastData); 
         }).catch(error => {
-            console.error("一個或多個 API 請求失敗:", error);
-            ui.recoPlaceholder.innerText = "無法載入所有天文台數據，無法生成建議。請檢查網路連線或稍後再試。";
-            ui.realtimePlaceholder.innerText = "載入失敗。";
-            ui.forecastPlaceholder.innerText = "載入失敗。";
+            console.error("生成建議時，一個或多個 API 請求失敗:", error);
+            ui.recoPlaceholder.innerText = "無法載入所有天文台數據，無法生成建議。";
         });
     }
 
-    /**
-     * 填充下拉選單 (保持不變)
-     */
-    function populateStationSelect(realtimeData) {
-        let realtimeDataStore = realtimeData;
-        if (realtimeData && realtimeData.temperature && realtimeData.temperature.data) {
-            ui.stationSelect.innerHTML = '<option value="">-- 請選擇地區 --</option>';
-            realtimeData.temperature.data.forEach(station => {
-                const option = document.createElement('option');
-                option.value = station.place;
-                option.textContent = station.place;
-                ui.stationSelect.appendChild(option);
-            });
-            ui.realtimePlaceholder.innerText = '請選擇一個地區以載入即時天氣狀況。';
-
-            ui.stationSelect.addEventListener('change', function() {
-                displayRealtimeWeather(this.value, realtimeDataStore);
-            });
-        } else {
-            ui.realtimePlaceholder.innerText = '無法獲取天氣站點列表。';
-        }
-    }
-    
-    /**
-     * 顯示單個站點天氣 (保持不變)
-     */
-    function displayRealtimeWeather(stationName, realtimeDataStore) {
-        // (此函數的內部邏輯與上一版完全相同，此處為簡潔省略)
-    }
-
-    /**
-     * 新增：填充九日天氣預報
-     */
-    function populateForecastDisplay(forecastData) {
-        ui.forecastContainer.innerHTML = '';
-        if (forecastData && forecastData.weatherForecast) {
-            forecastData.weatherForecast.forEach(day => {
-                const card = document.createElement('div');
-                card.className = 'forecast-day-card';
-                const date = `${day.forecastDate.slice(0,4)}-${day.forecastDate.slice(4,6)}-${day.forecastDate.slice(6,8)}`;
-                const iconUrl = `https://www.hko.gov.hk/images/wxicon/pic${day.ForecastIcon}.png`;
-
-                card.innerHTML = `<div class="date">${date}</div><div class="weekday">${day.week}</div><img src="${iconUrl}" alt="${day.forecastWeather}"><div class="temp">${day.forecastMintemp.value}°C / ${day.forecastMaxtemp.value}°C</div><div
+    // --- 頁面初始化 ---
+    initRealtimeWeather();
+    initForecastWeather();
+    initStargazingAnalysis(); // 新增：執行觀星建議分析
+});
