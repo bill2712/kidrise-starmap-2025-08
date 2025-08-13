@@ -9,38 +9,37 @@
 <body>
 
     <nav class="main-nav">
-        <a href="/kidrise-starmap-2025-08/index2.html" class="nav-link">星空圖</a>
+        <a href="/kidrise-starmap-2025-08/index.html" class="nav-link">星空圖</a>
         <a href="/kidrise-starmap-2025-08/planner.html" class="nav-link active">目標規劃</a>
-        <a href="/kidrise-starmap-2025-08/knowledge.html" class="nav-link">天文知識</a>
         <a href="/kidrise-starmap-2025-08/compass.html" class="nav-link">實時指南針</a>
-
+        <a href="/kidrise-starmap-2025-08/knowledge.html" class="nav-link">天文知識</a>
     </nav>
 
     <div class="content-container">
         <div class="section">
-            <h2>香港分區天氣實況</h2>
-            <p class="intro-text">選擇觀測地點，查看香港天文台提供的即時天氣數據，判斷是否適合觀星。</p>
+            <h2>香港分區即時天氣</h2>
+            <p class="intro-text">選擇觀測地點，查看香港天文台提供的即時天氣數據。資料約每 10 分鐘更新一次。</p>
             <div class="form-group">
-                <label for="district-select">選擇天氣站點:</label>
+                <label for="station-select">選擇天氣站點:</label>
                 <div class="select-wrapper">
-                    <select id="district-select">
-                        <option value="">-- 請選擇地區 --</option>
+                    <select id="station-select">
+                        <option value="">-- 正在載入站點列表 --</option>
                     </select>
                 </div>
             </div>
-            <div id="weather-display-container">
-                <p id="weather-placeholder">請選擇一個地區以載入即時天氣狀況。</p>
+            <div id="realtime-weather-container">
+                <p id="realtime-placeholder">請選擇一個地區以載入即時天氣狀況。</p>
             </div>
         </div>
 
         <div class="section">
-            <h2>今日天文現象 (香港時間)</h2>
-            <p class="intro-text">資料來源：香港天文台</p>
-            <div id="astro-phenomena-container">
-                <p id="astro-placeholder">正在載入天文數據...</p>
-                </div>
+            <h2>未來九日天氣預報</h2>
+            <p class="intro-text">查看全港未來九天的天氣趨勢，包括雲量、溫度及濕度，以規劃最佳觀星時機。</p>
+            <div id="forecast-container">
+                <p id="forecast-placeholder">正在載入九日天氣預報...</p>
+            </div>
         </div>
-        </div>
+    </div>
 
     <script src="/kidrise-starmap-2025-08/planner.js"></script>
 </body>
