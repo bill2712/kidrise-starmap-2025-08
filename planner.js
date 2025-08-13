@@ -1,4 +1,4 @@
-// planner.js (v5.2 + 觀星建議 + CORS 代理 + 容錯升級)
+// planner.js (v5.2 + 觀星建議 + CORS 代理 + 最終修正)
 
 document.addEventListener("DOMContentLoaded", function() {
     // --- UI 元素定義 ---
@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
         recoPlaceholder: document.getElementById('reco-placeholder')
     };
 
-    // --- API URLs (使用 CORS 代理) ---
+    // --- API URLs ---
     const PROXY_URL = 'https://corsproxy.io/?';
     const API_WEATHER_BASE = "https://data.weather.gov.hk/weatherAPI/opendata/weather.php";
     const API_OPENDATA_BASE = "https://data.weather.gov.hk/weatherAPI/opendata/opendata.php";
@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =======================================================
-    //  新增功能 (現在使用具備容錯能力的 Promise.allSettled)
+    //  新增功能：觀星建議摘要
     // =======================================================
     
     const DARK_SKY_LOCATIONS = [
@@ -95,20 +95,7 @@ document.addEventListener("DOMContentLoaded", function() {
         { name: "大帽山", station: "荃灣" }
     ];
 
-    function analyzeStargazingConditions(results) {
-        const forecastResult = results[0];
-        const realtimeResult = results[1];
-        const visibilityResult = results[2];
-
-        if (forecastResult.status !== 'fulfilled' || !forecastResult.value.weatherForecast) {
-            ui.recoPlaceholder.innerText = "無法獲取核心天氣預報，無法生成建議。";
-            return;
-        }
-        
-        const forecastData = forecastResult.value;
-        const realtimeData = realtimeResult.status === 'fulfilled' ? realtimeResult.value : null;
-        const visibilityData = visibilityResult.status === 'fulfilled' ? visibilityResult.value : null;
-
+    function analyzeStargazingConditions(forecastData, realtimeData, visibilityData) {
         const tonightForecast = forecastData.weatherForecast[0];
         let recommendation = { status: "不建議", summary: "", details: `今晚整體天氣預測：${tonightForecast.forecastWeather}`, cssClass: "reco-bad" };
 
@@ -118,16 +105,16 @@ document.addEventListener("DOMContentLoaded", function() {
             recommendation.summary = "今晚預測多雲，大部分時間天空將被雲層覆蓋，觀測條件不佳。";
         } else if (tonightForecast.forecastWeather.includes("晴") || tonightForecast.forecastWeather.includes("良好")) {
             let bestLocation = null, bestScore = -1000;
-            if (realtimeData) {
+            if (realtimeData && visibilityData && visibilityData.data) {
                 DARK_SKY_LOCATIONS.forEach(loc => {
                     const temp = realtimeData.temperature.data.find(s => s.place === loc.station);
                     const humidity = realtimeData.humidity.data.find(s => s.place === loc.station);
-                    const vis = visibilityData ? visibilityData.data.find(s => s[1] === loc.station) : null;
-                    if (temp && humidity) {
-                        const score = (vis ? vis[2] : 0) - humidity.value;
+                    const vis = visibilityData.data.find(s => s[1] === loc.station);
+                    if (temp && humidity && vis) {
+                        const score = vis[2] - humidity.value;
                         if (score > bestScore) {
                             bestScore = score;
-                            bestLocation = { name: loc.name, temp: temp.value, humidity: humidity.value, visibility: vis ? vis[2] : null };
+                            bestLocation = { name: loc.name, temp: temp.value, humidity: humidity.value, visibility: vis[2] };
                         }
                     }
                 });
@@ -136,13 +123,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 recommendation.status = "建議";
                 recommendation.cssClass = "reco-good";
                 recommendation.summary = `今晚天氣大致良好，適合觀星！根據即時數據，目前觀測條件最佳的地點是「${bestLocation.name}」。`;
-                let detailsText = `\n推薦地點即時天氣：溫度 ${bestLocation.temp}°C，相對濕度 ${bestLocation.humidity}%`;
-                if (bestLocation.visibility !== null) {
-                    detailsText += `，能見度 ${bestLocation.visibility} 公里。`;
-                } else {
-                    detailsText += `。(能見度數據暫缺)`;
-                }
-                recommendation.details += detailsText;
+                recommendation.details += `\n推薦地點即時天氣：溫度 ${bestLocation.temp}°C，相對濕度 ${bestLocation.humidity}%，能見度 ${bestLocation.visibility} 公里。`;
             } else {
                 recommendation.status = "建議";
                 recommendation.cssClass = "reco-good";
@@ -162,35 +143,23 @@ document.addEventListener("DOMContentLoaded", function() {
     function initStargazingAnalysis() {
         const forecastUrl = PROXY_URL + encodeURIComponent(`${API_WEATHER_BASE}?dataType=fnd&lang=${LANG}`);
         const realtimeUrl = PROXY_URL + encodeURIComponent(`${API_WEATHER_BASE}?dataType=rhrread&lang=${LANG}`);
-        const visibilityUrl = PROXY_URL + encodeURIComponent(`${API_OPENDATA_BASE}?dataType=LTMV&lang=${LANG}`);
+        // 關鍵修正：為能見度 API 加上 rformat=json 參數
+        const visibilityUrl = PROXY_URL + encodeURIComponent(`${API_OPENDATA_BASE}?dataType=LTMV&lang=${LANG}&rformat=json`);
 
-        // 使用 Promise.allSettled 提升容錯能力
-        Promise.allSettled([
-            fetch(forecastUrl),
-            fetch(realtimeUrl),
-            fetch(visibilityUrl)
-        ]).then(results => {
-            const jsonDataPromises = results.map(result => {
-                if (result.status === 'fulfilled' && result.value.ok) {
-                    return result.value.json();
-                }
-                return Promise.resolve({ error: true, status: result.reason || (result.value ? result.value.status : "Unknown") });
-            });
-            
-            Promise.all(jsonDataPromises).then(dataResults => {
-                const finalResults = dataResults.map((data, index) => {
-                    if (data.error) {
-                        return { status: 'rejected', reason: `API request failed with status: ${data.status}` };
-                    }
-                    return { status: 'fulfilled', value: data };
-                });
-                analyzeStargazingConditions(finalResults);
-            });
+        Promise.all([
+            fetch(forecastUrl).then(res => res.json()),
+            fetch(realtimeUrl).then(res => res.json()),
+            fetch(visibilityUrl).then(res => res.json())
+        ]).then(([forecastData, realtimeData, visibilityData]) => {
+            analyzeStargazingConditions(forecastData, realtimeData, visibilityData);
+        }).catch(error => {
+            console.error("生成建議時，一個或多個 API 請求失敗:", error);
+            ui.recoPlaceholder.innerText = "無法載入所有天文台數據，無法生成建議。";
         });
     }
 
     // --- 頁面初始化 ---
     initRealtimeWeather();
     initForecastWeather();
-    initStargazingAnalysis(); // 新增：執行觀星建議分析
+    initStargazingAnalysis();
 });
