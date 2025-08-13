@@ -207,3 +207,52 @@ select { width: 100%; box-sizing: border-box; padding: 12px 15px; border-radius:
     background-color: #2ecc71;
     color: #fff;
 }
+/* --- planner.html 官方 API 版樣式 --- */
+
+/* 即時天氣卡片 (取代舊的 weather-display-card) */
+#realtime-weather-container .weather-card {
+    background-color: #1a2366;
+    padding: 25px;
+    border-radius: 10px;
+    border-left: 5px solid #ffcc00;
+    display: none;
+    animation: fadeIn 0.5s;
+}
+#realtime-weather-container .weather-card.visible {
+    display: block;
+}
+#realtime-weather-container .weather-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1px solid #3a8fb7;
+    padding-bottom: 15px;
+    margin-bottom: 15px;
+}
+#realtime-weather-container .location h3 { margin: 0; color: #ffcc00; font-size: 1.8em; }
+#realtime-weather-container .location p { margin: 5px 0 0 0; color: #ccc; font-size: 0.9em; }
+#realtime-weather-container .icon img { width: 64px; height: 64px; }
+#realtime-weather-container .weather-body { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 20px; }
+#realtime-weather-container .weather-metric { text-align: center; }
+#realtime-weather-container .weather-metric .label { font-size: 1em; color: #87CEEB; }
+#realtime-weather-container .weather-metric .value { font-size: 1.5em; font-weight: bold; margin-top: 5px; }
+
+/* 九日天氣預報網格 */
+#forecast-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+.forecast-day-card {
+    background-color: rgba(26, 35, 102, 0.7);
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    border: 1px solid #3a8fb7;
+}
+.forecast-day-card .date { font-weight: bold; color: #ffcc00; font-size: 1.1em; }
+.forecast-day-card .weekday { font-size: 0.9em; color: #87CEEB; margin-bottom: 10px; }
+.forecast-day-card img { width: 50px; height: 50px; }
+.forecast-day-card .temp { font-size: 1.1em; margin: 5px 0; }
+.forecast-day-card .weather-desc { font-size: 0.9em; color: #ccc; min-height: 40px; }
