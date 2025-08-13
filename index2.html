@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>星空圖 - Kidrise 天文助手</title>
+    <title>星空圖 - Kidrise 天文助手 (電腦版)</title>
     <link rel="stylesheet" href="/kidrise-starmap-2025-08/style.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 </head>
 <body>
 
@@ -18,10 +17,10 @@
 
     <div class="content-container">
         <div class="section">
-            <h2 id="starmap-title">即時星空圖</h2>
-            <p id="starmap-intro" class="intro-text">您可以直接在星圖上拖曳與用雙指縮放進行探索，或使用下方的按鈕更新您的觀測地點。</p>
+            <h2>即時星空圖</h2>
+            <p class="intro-text">您可以直接在星圖上拖曳與用滑鼠滾輪縮放進行探索，或使用下方的按鈕更新您的觀測地點。</p>
             <div id="starmap-container">
-                <div id="celestial-map"></div> 
+                <div id="celestial-map"></div>
                 <p id="message"></p>
             </div>
         </div>
@@ -39,7 +38,7 @@
                     <p>開啟後，將手機對向天空，星圖將隨之移動。</p>
                     <button id="skyview-toggle" class="control-button">🔭 開啟陀螺儀</button>
                 </div>
-                <div id="art-control-group" class="control-group">
+                <div class="control-group">
                     <h4>視覺效果</h4>
                     <p>為主要星座疊加上漂亮的藝術圖案，增添趣味。</p>
                      <button id="toggle-art-button" class="control-button">🎨 顯示圖案</button>
@@ -47,45 +46,48 @@
             </div>
         </div>
 
-        <div id="guide-section" class="section guide-section">
-             <h2>如何使用互動星空圖</h2>
-             </div>
+       <div class="section guide-section">
+            <h2>如何使用互動星空圖</h2>
+            
+            <div class="guide-step">
+                <h4>第一步：了解介面</h4>
+                <p>您眼前的星圖是根據當前時間和您的地理位置即時生成的。地圖邊緣的半透明圓圈代表您的**地平線**，上面的 **N, S, E, W** 分別代表**北、南、東、西**四個方位。圖中的亮點是恆星和行星，連線則構成了星座的輪廓。</p>
+            </div>
+
+            <div class="guide-step">
+                <h4>第二步：基本操作</h4>
+                <ul>
+                    <li><strong>平移 (Pan)：</strong> 在星圖上按住並拖曳滑鼠（或在觸控螢幕上用手指滑動），即可探索天空的不同區域。</li>
+                    <li><strong>縮放 (Zoom)：</strong> 使用滑鼠的滾輪（或在觸控螢幕上用雙指張開或捏合），可以放大或縮小星圖，查看更多細節或更廣闊的星空。</li>
+                </ul>
+            </div>
+
+            <div class="guide-step">
+                <h4>第三步：使用控制項</h4>
+                <p>星圖下方的控制項能為您提供更強大的功能：</p>
+                <ul>
+                    <li><strong>📍 更新位置：</strong> 點擊此按鈕，瀏覽器會請求您的 GPS 權限。授權後，星圖會立刻更新為您所在地的即時星空，這是最準確的觀星方式。</li>
+                    <li><strong>🔭 開啟陀螺儀：</strong> (手機專用) 點擊開啟後，只需將您的手機舉起並朝向天空，星圖就會像一個透明的窗戶一樣，即時顯示您正前方天空的星體！再次點擊即可關閉。</li>
+                    <li><strong>🎨 顯示圖案：</strong> 點擊此按鈕，主要的星座會疊加上精美的藝術圖案，讓辨認星座變得更加有趣和直觀。</li>
+                </ul>
+            </div>
+
+            <div class="guide-step">
+                <h4>第四步：如何將星圖與夜空對應</h4>
+                <p>要將虛擬星圖用於真實觀星，訣竅是「對應方位，尋找路標」。</p>
+                <ol>
+                    <li>首先，請在現實世界中找到一個確定的方位，例如北方（可以藉助手機的指南針 App）。</li>
+                    <li>然後，將我們的互動星圖拖曳至相同的方位（將星圖中的 "N" 標記朝向您）。</li>
+                    <li>接著，在星圖上尋找當季最顯眼的「路標」星座，例如冬季的**獵戶座**（有三顆並排的腰帶星）或任何季節都可見的**北斗七星**。</li>
+                    <li>在真實夜空中找到這些「路標」後，您就可以它們為起點，對照著星圖，一步步地「跳」到您想尋找的其他天體了！</li>
+                </ol>
+            </div>
+        </div>
     </div>
 
-    <script>
-        function isMobileDevice() {
-            return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-        }
+    <script src="/kidrise-starmap-2025-08/lib/d3.v4.min.js"></script>
+    <script src="/kidrise-starmap-2025-08/lib/d3-celestial.min.js"></script>
+    <script src="/kidrise-starmap-2025-08/map.js"></script>
 
-        function loadScript(src, onLoadCallback) {
-            const script = document.createElement('script');
-            script.src = src;
-            script.onload = onLoadCallback;
-            document.body.appendChild(script);
-        }
-
-        if (isMobileDevice()) {
-            // -- 手機版 --
-            console.log("偵測到行動裝置，載入 VirtualSky...");
-            
-            // 載入 VirtualSky 函式庫，然後載入我們的手機版腳本
-            loadScript('https://slowe.github.io/VirtualSky/stuquery.js', function() {
-                loadScript('/kidrise-starmap-2025-08/virtualsky.js', function() {
-                    loadScript('/kidrise-starmap-2025-08/mobile_map.js', null);
-                });
-            });
-
-        } else {
-            // -- 電腦版 --
-            console.log("偵測到電腦裝置，載入 d3-celestial...");
-            
-            // 依序載入 d3, d3-celestial, 和我們的電腦版腳本
-            loadScript('/kidrise-starmap-2025-08/lib/d3.v4.min.js', function() {
-                loadScript('/kidrise-starmap-2025-08/lib/d3-celestial.min.js', function() {
-                    loadScript('/kidrise-starmap-2025-08/map.js', null);
-                });
-            });
-        }
-    </script>
 </body>
 </html>
