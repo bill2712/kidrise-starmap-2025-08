@@ -1,4 +1,4 @@
-/* style.css (v8.0 - 最終整理完整版) */
+/* style.css (v8.1 - 最終整理完整版) */
 
 /* =================================== */
 /* === 1. 全局與基礎佈局 (Global & Layout) === */
@@ -39,7 +39,7 @@ h2 {
 /* =================================== */
 /* === 2. 頂部導覽列 (Navigation Bar) === */
 /* =================================== */
-.main-nav, .tab-nav {
+.main-nav {
     display: flex;
     background-color: #1a2366;
     box-shadow: 0 2px 5px rgba(0,0,0,0.3);
@@ -49,12 +49,10 @@ h2 {
     width: 100%;
     z-index: 1000;
 }
-.nav-link, .tab-link {
+.nav-link {
     flex-grow: 1;
     padding: 15px 10px;
     cursor: pointer;
-    background: none;
-    border: none;
     color: #ccc;
     font-size: 16px;
     font-weight: bold;
@@ -63,20 +61,13 @@ h2 {
     border-bottom: 3px solid transparent;
     transition: all 0.3s ease;
 }
-.nav-link:hover, .tab-link:hover {
+.nav-link:hover {
     background-color: rgba(255, 255, 255, 0.1);
     color: #fff;
 }
-.nav-link.active, .tab-link.active {
+.nav-link.active {
     color: #ffcc00;
     border-bottom-color: #ffcc00;
-}
-.tab-content {
-    display: none;
-    animation: fadeIn 0.5s;
-}
-.tab-content.active {
-    display: block;
 }
 
 /* =================================== */
@@ -91,14 +82,15 @@ h2 {
 select { width: 100%; box-sizing: border-box; padding: 12px 15px; border-radius: 8px; border: 2px solid #3a8fb7; background-color: #0c1445; color: #fff; font-size: 16px; -webkit-appearance: none; -moz-appearance: none; appearance: none; }
 
 /* --- 按鈕 --- */
-.control-button, .form-group button { border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s; }
-.control-button:active, .form-group button:active { transform: scale(0.95); }
+.control-button { border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.2s; }
+.control-button:active { transform: scale(0.95); }
 #locationButton { background-color: #ffcc00; color: #000; }
 #skyview-toggle { background-color: #3498db; color: white; }
 #skyview-toggle.active { background-color: #e74c3c; }
 #toggle-art-button { background-color: #9b59b6; color: white; }
 #toggle-art-button.active { background-color: #e91e63; }
 #permission-button { background-color: #2ecc71; color: #fff; }
+
 
 /* --- 彈出式 Modal --- */
 .modal { display: none; position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); justify-content: center; align-items: center; animation: fadeIn 0.3s; }
@@ -115,23 +107,26 @@ select { width: 100%; box-sizing: border-box; padding: 12px 15px; border-radius:
 .control-group { flex: 1; min-width: 250px; text-align: center; background-color: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 10px; display: flex; flex-direction: column; justify-content: space-between; }
 .control-group h4 { margin-top: 0; margin-bottom: 10px; color: #87CEEB; font-size: 1.1em; }
 .control-group p { margin: 0 0 15px 0; color: #ccc; font-size: 0.9em; flex-grow: 1; }
-.guide-section h4 { color: #87CEEB; }
-.guide-section p, .guide-section li { line-height: 1.8; color: #ccc; }
-.guide-section ul, .guide-section ol { padding-left: 25px; }
+.guide-section h2 { margin-bottom: 30px; }
+.guide-step { margin-bottom: 25px; padding-bottom: 25px; border-bottom: 1px solid rgba(58, 143, 183, 0.3); }
+.guide-section > .guide-step:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.guide-step h4 { color: #87CEEB; font-size: 1.2em; margin-top: 0; margin-bottom: 15px; }
+.guide-step p, .guide-step li { line-height: 1.8; color: #ccc; }
+.guide-step ul, .guide-step ol { padding-left: 25px; }
+.guide-step strong { color: #ffcc00; }
 
 /* =================================== */
 /* === 5. 目標規劃頁面 (planner.html) === */
 /* =================================== */
-#realtime-weather-container .weather-card { border-left: 5px solid #ffcc00; display: none; animation: fadeIn 0.5s; }
-#realtime-weather-container .weather-card.visible { display: block; }
-#realtime-weather-container .weather-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #3a8fb7; padding-bottom: 15px; margin-bottom: 15px; }
-#realtime-weather-container .location h3 { margin: 0; color: #ffcc00; font-size: 1.8em; }
-#realtime-weather-container .location p { margin: 5px 0 0 0; color: #ccc; font-size: 0.9em; }
-#realtime-weather-container .icon img { width: 64px; height: 64px; }
-#realtime-weather-container .weather-body { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 20px; }
-#realtime-weather-container .weather-metric { text-align: center; }
-#realtime-weather-container .weather-metric .label { font-size: 1em; color: #87CEEB; }
-#realtime-weather-container .weather-metric .value { font-size: 1.5em; font-weight: bold; margin-top: 5px; }
+#realtime-weather-container .weather-card, .weather-display-card { border-left: 5px solid #ffcc00; animation: fadeIn 0.5s; background-color: #1a2366; padding: 25px; border-radius: 10px; }
+#realtime-weather-container .weather-header, .weather-display-card .weather-header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #3a8fb7; padding-bottom: 15px; margin-bottom: 15px; }
+#realtime-weather-container .location h3, .weather-display-card .location h3 { margin: 0; color: #ffcc00; font-size: 1.8em; }
+#realtime-weather-container .location p, .weather-display-card .location p { margin: 5px 0 0 0; color: #ccc; font-size: 0.9em; }
+#realtime-weather-container .icon img, .weather-display-card .icon img { width: 64px; height: 64px; }
+#realtime-weather-container .weather-body, .weather-display-card .weather-body { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 20px; }
+#realtime-weather-container .weather-metric, .weather-display-card .weather-metric { text-align: center; }
+#realtime-weather-container .weather-metric .label, .weather-display-card .weather-metric .label { font-size: 1em; color: #87CEEB; }
+#realtime-weather-container .weather-metric .value, .weather-display-card .weather-metric .value { font-size: 1.5em; font-weight: bold; margin-top: 5px; }
 #forecast-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; }
 .forecast-day-card { background-color: rgba(26, 35, 102, 0.7); padding: 15px; border-radius: 10px; text-align: center; border: 1px solid #3a8fb7; }
 .forecast-day-card .date { font-weight: bold; color: #ffcc00; font-size: 1.1em; }
@@ -149,7 +144,7 @@ select { width: 100%; box-sizing: border-box; padding: 12px 15px; border-radius:
 .reco-bad .status { color: #e74c3c; }
 .reco-ok { background-color: rgba(241, 196, 15, 0.2); border-color: #f1c40f; }
 .reco-ok .status { color: #f1c40f; }
-#weather-placeholder { color: #666; text-align: center; padding: 20px; }
+#weather-placeholder, #zodiac-placeholder, #reco-placeholder { color: #666; text-align: center; padding: 20px; }
 
 /* ======================================= */
 /* === 6. 指南針頁面 (compass.html) === */
@@ -191,23 +186,25 @@ select { width: 100%; box-sizing: border-box; padding: 12px 15px; border-radius:
 .zodiac-info-container h3 { color: #ffcc00; margin-top: 0; }
 .zodiac-info-container h4 { color: #87CEEB; margin-top: 20px; border-bottom: 1px solid #3a8fb7; padding-bottom: 5px; }
 .zodiac-info-container p { line-height: 1.8; }
-#zodiac-placeholder { color: #666; text-align: center; padding: 40px 0; }
 
 /* =================================== */
 /* === 8. 動畫 & 響應式 (Animations & Responsive) === */
 /* =================================== */
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes blink { 50% { opacity: 0.3; } }
-.target-indicator { animation: blink 1.5s linear infinite; fill: none; stroke: #FFD700; stroke-width: 2px; }
 
+/* 響應式切換版本 (Mobile First) */
+#starmap-container-desktop, .desktop-only { display: none !important; }
+#starmap-container-mobile, .mobile-only { display: block !important; }
+.mobile-only.control-group { display: flex !important; }
+
+@media (min-width: 769px) {
+    #starmap-container-desktop, .desktop-only { display: block !important; }
+    .desktop-only.control-group { display: flex !important; }
+    #starmap-container-mobile, .mobile-only { display: none !important; }
+}
+
+/* 其他響應式調整 */
 @media (max-width: 768px) {
-    /* 響應式切換版本 */
-    #starmap-container-desktop { display: none; }
-    .desktop-only { display: none !important; }
-    #starmap-container-mobile { display: block; }
-    .mobile-only { display: flex !important; flex: 1; min-width: 250px; text-align: center; }
-
-    /* 其他響應式調整 */
     .nav-link, .tab-link { font-size: 14px; }
     .zodiac-selector { grid-template-columns: repeat(4, 1fr); }
 }
