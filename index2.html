@@ -17,10 +17,10 @@
 
     <div class="content-container">
         <div class="section">
-            <h2>即時星空圖</h2>
-            <p class="intro-text">您可以直接在星圖上拖曳與用雙指縮放進行探索，或使用下方的按鈕更新您的觀測地點。</p>
+            <h2 id="starmap-title">即時星空圖</h2>
+            <p id="starmap-intro" class="intro-text">您可以直接在星圖上拖曳與用雙指縮放進行探索，或使用下方的按鈕更新您的觀測地點。</p>
             <div id="starmap-container">
-                <div id="celestial-map"></div>
+                <div id="celestial-map"></div> 
                 <p id="message"></p>
             </div>
         </div>
@@ -38,7 +38,7 @@
                     <p>開啟後，將手機對向天空，星圖將隨之移動。</p>
                     <button id="skyview-toggle" class="control-button">🔭 開啟陀螺儀</button>
                 </div>
-                <div class="control-group">
+                <div id="art-control-group" class="control-group">
                     <h4>視覺效果</h4>
                     <p>為主要星座疊加上漂亮的藝術圖案，增添趣味。</p>
                      <button id="toggle-art-button" class="control-button">🎨 顯示圖案</button>
@@ -89,5 +89,51 @@
     <script src="/kidrise-starmap-2025-08/lib/d3.v4.min.js"></script>
     <script src="/kidrise-starmap-2025-08/lib/d3-celestial.min.js"></script>
     <script src="/kidrise-starmap-2025-08/map.js"></script>
+     <script>
+        function isMobileDevice() {
+            return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+        }
+
+        // 根據裝置類型，動態載入對應的函式庫和腳本
+        if (isMobileDevice()) {
+            // -- 手機版 --
+            console.log("偵測到行動裝置，載入 VirtualSky 沉浸式星圖...");
+            
+            // 1. 建立 VirtualSky 的 script 標籤
+            const virtualSkyLib = document.createElement('script');
+            virtualSkyLib.src = 'https://www.virtualsky.org/js/virtualsky.js';
+            document.body.appendChild(virtualSkyLib);
+
+            // 2. 在函式庫載入後，再載入我們自己的手機版腳本
+            virtualSkyLib.onload = function() {
+                const mobileMapScript = document.createElement('script');
+                mobileMapScript.src = '/kidrise-starmap-2025-08/mobile_map.js';
+                document.body.appendChild(mobileMapScript);
+            };
+
+        } else {
+            // -- 電腦版 --
+            console.log("偵測到電腦裝置，載入 d3-celestial 數據星圖...");
+            
+            // 1. 建立 d3.js 的 script 標籤
+            const d3Lib = document.createElement('script');
+            d3Lib.src = '/kidrise-starmap-2025-08/lib/d3.v4.min.js';
+            document.body.appendChild(d3Lib);
+
+            // 2. 在 d3.js 載入後，再載入 d3-celestial.js
+            d3Lib.onload = function() {
+                const celestialLib = document.createElement('script');
+                celestialLib.src = '/kidrise-starmap-2025-08/lib/d3-celestial.min.js';
+                document.body.appendChild(celestialLib);
+
+                // 3. 在 d3-celestial.js 載入後，再載入我們自己的電腦版腳本
+                celestialLib.onload = function() {
+                    const desktopMapScript = document.createElement('script');
+                    desktopMapScript.src = '/kidrise-starmap-2025-08/map.js';
+                    document.body.appendChild(desktopMapScript);
+                };
+            };
+        }
+    </script>
 </body>
 </html>
