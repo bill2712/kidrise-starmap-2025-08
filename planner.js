@@ -1,4 +1,4 @@
-// planner.js (v4.1 - 新增天文現象 API)
+// planner.js (v4.2 - 新增 CORS 代理來解決 API 請求問題)
 
 document.addEventListener("DOMContentLoaded", function() {
     // --- UI 元素定義 ---
@@ -8,17 +8,24 @@ document.addEventListener("DOMContentLoaded", function() {
     const astroContainer = document.getElementById('astro-phenomena-container');
     const astroPlaceholder = document.getElementById('astro-placeholder');
 
-    // --- API URLs ---
-    const HKO_REGIONAL_API_URL = 'https://data.weather.gov.hk/weatherAPI/opendata/latestWeatherElements.php';
-    const HKO_ASTRO_API_URL = 'https://data.weather.gov.hk/weatherAPI/opendata/astroInfo.php';
+    // --- API URLs (關鍵修改) ---
+    // 1. 定義代理伺服器
+    const PROXY_URL = 'https://corsproxy.io/?';
+
+    // 2. 定義原始的 API URLs
+    const ORIGINAL_HKO_REGIONAL_URL = 'https://data.weather.gov.hk/weatherAPI/opendata/latestWeatherElements.php';
+    const ORIGINAL_HKO_ASTRO_URL = 'https://data.weather.gov.hk/weatherAPI/opendata/astroInfo.php';
+
+    // 3. 將原始 URL 編碼後，與代理伺服器組合
+    const HKO_REGIONAL_API_URL = PROXY_URL + encodeURIComponent(ORIGINAL_HKO_REGIONAL_URL);
+    const HKO_ASTRO_API_URL = PROXY_URL + encodeURIComponent(ORIGINAL_HKO_ASTRO_URL);
     
     let weatherDataStore = null;
 
     // =============================================
-    //  功能一：分區天氣 (與之前相同)
+    //  功能一：分區天氣
     // =============================================
     function displayWeatherData(stationCode) {
-        // ... (此函數內部邏輯保持不變)
         if (!weatherDataStore || !stationCode) {
             weatherContainer.innerHTML = '<p id="weather-placeholder">請選擇一個地區以載入即時天氣狀況。</p>';
             return;
@@ -57,8 +64,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function initRegionalWeather() {
         weatherPlaceholder.innerText = '正在從香港天文台獲取站點列表...';
-        fetch(HKO_REGIONAL_API_URL)
-            .then(response => response.json())
+        fetch(HKO_REGIONAL_API_URL) // 使用加上代理的 URL
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP 錯誤! 狀態: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 weatherDataStore = data;
                 if (data && data.temperature && data.temperature.data) {
@@ -70,12 +82,12 @@ document.addEventListener("DOMContentLoaded", function() {
                     });
                     weatherPlaceholder.innerText = '請選擇一個地區以載入即時天氣狀況。';
                 } else {
-                    weatherPlaceholder.innerText = '無法獲取天氣站點列表。';
+                    weatherPlaceholder.innerText = '無法解析天氣站點列表。';
                 }
             })
             .catch(error => {
-                console.error('天氣 API 錯誤:', error);
-                weatherPlaceholder.innerText = '載入天氣數據失敗，請稍後再試。';
+                console.error('分區天氣 API 錯誤:', error);
+                weatherPlaceholder.innerText = '載入天氣數據失敗，請檢查網路或稍後再試。';
             });
         districtSelect.addEventListener('change', function() {
             displayWeatherData(this.value);
@@ -83,11 +95,16 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // =============================================
-    //  功能二：今日天文現象 (全新功能)
+    //  功能二：今日天文現象
     // =============================================
     function initAstroPhenomena() {
-        fetch(HKO_ASTRO_API_URL)
-            .then(response => response.json())
+        fetch(HKO_ASTRO_API_URL) // 使用加上代理的 URL
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP 錯誤! 狀態: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 astroContainer.innerHTML = ''; // 清空 placeholder
 
