@@ -240,6 +240,54 @@ select { width: 100%; box-sizing: border-box; padding: 12px 15px; border-radius:
     display: none !important;
 }
 
+/* --- 指南針頁面 v2.6 升級樣式 --- */
+
+/* 分析按鈕 */
+.analyze-button-container {
+    text-align: center;
+    margin: 20px 0;
+}
+#analyze-direction-button {
+    background-color: #2ecc71;
+    color: #fff;
+    font-size: 1.1em;
+    padding: 12px 25px;
+}
+
+/* 初始提示文字 */
+.stars-placeholder {
+    color: #666;
+    text-align: center;
+    padding: 30px;
+}
+
+/* 可見星體詳細卡片 */
+.star-details-card {
+    background-color: rgba(26, 35, 102, 0.5);
+    border-left: 4px solid; /* 顏色將由 JS 設定 */
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    animation: fadeIn 0.5s;
+}
+.star-details-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+.star-details-header h4 {
+    margin: 0;
+    font-size: 1.2em;
+    color: #fff;
+}
+.star-details-card p {
+    margin: 0;
+    line-height: 1.7;
+    color: #ccc;
+    font-size: 0.95em;
+}
+
 /* ======================================= */
 /* === 7. 天文知識頁面 (knowledge.html) === */
 /* ======================================= */
