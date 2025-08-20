@@ -1,4 +1,4 @@
-// compass.js (v2.1 - 修正 Celestial 初始化 Bug 並為地點 API 加入 CORS 代理)
+// compass.js (v2.2 - 修正 Celestial 初始化 Bug 並更換 CORS 代理)
 
 document.addEventListener("DOMContentLoaded", function() {
     if (typeof Celestial === "undefined") { return console.error("核心星圖函式庫 Celestial 未能成功載入。"); }
@@ -27,9 +27,10 @@ document.addEventListener("DOMContentLoaded", function() {
         setInterval(updateTime, 1000);
         getLocation();
         
-        // 關鍵修正 1：加入 width: 1 來繞開函式庫的 getBoundingClientRect Bug
+        // 關鍵修正 1：加入 projection 屬性以避免初始化錯誤
         const celestialConfig = {
-            width: 1, // 只需一個非零值即可
+            width: 1, // 只需一個非零值
+            projection: "stereographic", // 必需的屬性
             datapath: "/kidrise-starmap-2025-08/data/",
             planets: { 
                 show: true, 
@@ -69,16 +70,20 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function fetchLocationName(lat, lon) {
-        // 關鍵修正 2：為逆地理編碼 API 加上 CORS 代理
-        const PROXY_URL = 'https://corsproxy.io/?';
-        const ORIGINAL_API_URL = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
-        const REVERSE_GEOCODING_API = PROXY_URL + encodeURIComponent(ORIGINAL_API_URL);
+        // 關鍵修正 2：更換為更穩定的 CORS 代理 allorigins.win
+        const originalApiUrl = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
+        const proxyApiUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(originalApiUrl)}`;
 
-        fetch(REVERSE_GEOCODING_API)
-            .then(response => response.json())
+        fetch(proxyApiUrl)
+            .then(response => {
+                if (response.ok) return response.json();
+                throw new Error('Network response was not ok.');
+            })
             .then(data => {
-                if (data && data.address) {
-                    const address = data.address;
+                // allorigins 會將原始數據包裝在 "contents" 屬性中
+                const geoData = JSON.parse(data.contents);
+                if (geoData && geoData.address) {
+                    const address = geoData.address;
                     const locationName = address.city || address.town || address.village || address.country || "未知地點";
                     ui.currentLocation.textContent = `📍 ${locationName}`;
                 } else {
@@ -149,7 +154,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (visibleObjects.length > 0) {
             ui.visibleStarsList.innerHTML = visibleObjects
                 .slice(0, 5)
-                .map(item => `<li><span class.star-type star-type-${item.type.toLowerCase()}">${getTypeName(item.type)}</span> ${item.name}</li>`)
+                .map(item => `<li><span class="star-type star-type-${item.type.toLowerCase()}">${getTypeName(item.type)}</span> ${item.name}</li>`)
                 .join('');
         } else {
             ui.visibleStarsList.innerHTML = `<li>當前方向無顯著目標</li>`;
