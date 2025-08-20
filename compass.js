@@ -1,9 +1,10 @@
-// compass.js (v2.0 - 功能升級版)
+// compass.js (v2.2 - 修正 Celestial 初始化 projection 錯誤)
 
 document.addEventListener("DOMContentLoaded", function() {
     if (typeof Celestial === "undefined") { return console.error("核心星圖函式庫 Celestial 未能成功載入。"); }
 
     const ui = {
+        compassRose: document.getElementById('compass-rose'),
         compassNeedle: document.getElementById('compass-needle-img'),
         compassReading: document.getElementById('compass-reading'),
         currentTime: document.getElementById('current-time'),
@@ -20,12 +21,27 @@ document.addEventListener("DOMContentLoaded", function() {
         updateTime();
         setInterval(updateTime, 1000);
         getLocation();
+        
+        // 關鍵修正：加入 projection 屬性
         const celestialConfig = {
-            width: 1, datapath: "/kidrise-starmap-2025-08/data/",
-            planets: { show: true, which: ["sol", "mer", "ven", "ter", "lun", "mar", "jup", "sat", "ura", "nep"], symbols: { "sol": {}, "lun": {}, "mer": {}, "ven": {}, "mar": {}, "jup": {}, "sat": {}, "ura": {}, "nep": {}, "ter": {} }, namestyle: {} },
-            callback: function(err) { if (err) return; buildCelestialIndex(); }
+            projection: "stereographic", // 必需的屬性，即使不顯示地圖
+            width: 1, 
+            datapath: "/kidrise-starmap-2025-08/data/",
+            planets: { 
+                show: true, 
+                which: ["sol", "mer", "ven", "ter", "lun", "mar", "jup", "sat", "ura", "nep"],
+                symbols: { "sol": {}, "lun": {}, "mer": {}, "ven": {}, "mar": {}, "jup": {}, "sat": {}, "ura": {}, "nep": {}, "ter": {} },
+                namestyle: { fill: "#f0f0f0" }
+            },
+            callback: function(err) {
+                if (err) return console.error("Celestial Error:", err);
+                buildCelestialIndex();
+                // 在數據載入後再嘗試更新可見星體
+                updateVisibleStars();
+            }
         };
         Celestial.display(celestialConfig);
+
         ui.permissionButton.addEventListener('click', requestSensorPermission);
     }
     
@@ -36,7 +52,6 @@ document.addEventListener("DOMContentLoaded", function() {
             const { latitude, longitude, altitude } = pos.coords;
             state.location = [latitude, longitude];
             fetchLocationName(latitude, longitude);
-            // 升級 5: 顯示海拔高度
             if (altitude) {
                 ui.currentAltitude.textContent = `海拔: ${Math.round(altitude)} 公尺`;
             } else {
@@ -46,7 +61,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }, err => { ui.currentLocation.textContent = "無法獲取位置"; });
     }
 
-    // 升級 4: 請求中文地點
     function fetchLocationName(lat, lon) {
         const PROXY_URL = 'https://corsproxy.io/?';
         const ORIGINAL_API_URL = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
@@ -59,7 +73,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 if (address) {
                     locationName = address.city || address.town || address.county || address.state || address.country;
                 }
-                // 升級 3: 顯示度分秒格式
                 const latDMS = decimalToDMS(lat, true);
                 const lonDMS = decimalToDMS(lon, false);
                 ui.currentLocation.textContent = `${locationName} (${latDMS} ${lonDMS})`;
@@ -70,7 +83,6 @@ document.addEventListener("DOMContentLoaded", function() {
             });
     }
 
-    // 升級 3: 將十進位經緯度轉為度分秒格式
     function decimalToDMS(decimal, isLatitude) {
         const dir = decimal > 0 ? (isLatitude ? '北緯' : '東經') : (isLatitude ? '南緯' : '西經');
         const absDecimal = Math.abs(decimal);
@@ -102,24 +114,58 @@ document.addEventListener("DOMContentLoaded", function() {
         let alpha = event.webkitCompassHeading || event.alpha;
         if (alpha === null) return;
         state.azimuth = alpha;
-        // 升級 1: 旋轉指針
         ui.compassNeedle.style.transform = `rotate(${alpha}deg)`;
-        // 升級 2: 顯示中文方位
         ui.compassReading.textContent = `${Math.round(alpha)}° ${getDirectionFromAzimuth(alpha)}`;
         updateVisibleStars();
     }
     
-    // 升級 2: 根據角度獲取中文方位
     function getDirectionFromAzimuth(azimuth) {
         const directions = ['北', '東北偏北', '東北', '東北偏東', '東', '東南偏東', '東南', '東南偏南', '南', '西南偏南', '西南', '西南偏西', '西', '西北偏西', '西北', '西北偏北'];
         const index = Math.round(azimuth / 22.5) % 16;
         return directions[index];
     }
     
-    // (buildCelestialIndex, updateVisibleStars, getTypeName 保持不變)
-    function buildCelestialIndex() { /* ... */ }
-    function updateVisibleStars() { /* ... */ }
-    function getTypeName(type) { /* ... */ }
+    function buildCelestialIndex() {
+        if (Celestial.constellations) { Celestial.constellations.forEach(c => state.celestialData.push({ name: c.name, type: "constellation" })); }
+        if (Celestial.data?.stars?.features) { Celestial.data.stars.features.forEach(f => { const nm = f.properties?.name; if (nm && f.properties.mag < 2.5) state.celestialData.push({ name: nm, type: "star" }); }); }
+        ["Sun","Moon","Mercury","Venus","Mars","Jupiter","Saturn","Uranus","Neptune"].forEach(p => state.celestialData.push({ name: p, type: "planet" }));
+    }
+
+    function updateVisibleStars() {
+        if (!state.location || state.celestialData.length === 0) return;
+        Celestial.date(new Date());
+        
+        const visibleObjects = [];
+        const viewAzimuth = state.azimuth;
+        const viewAltitude = 30;
+        const viewRadius = 45;
+        const centerCoords = Celestial.azimuthalToEquatorial({az: viewAzimuth, alt: viewAltitude}, state.location);
+
+        state.celestialData.forEach(item => {
+            const itemCoords = Celestial.search({ type: item.type, name: item.name });
+            if (itemCoords) {
+                const distance = Celestial.distance(centerCoords, itemCoords);
+                const currentPos = Celestial.equatorialToAzimuthal(itemCoords, state.location);
+                if (currentPos.alt > 0 && distance <= viewRadius) {
+                    visibleObjects.push(item);
+                }
+            }
+        });
+
+        if (visibleObjects.length > 0) {
+            ui.visibleStarsList.innerHTML = visibleObjects
+                .slice(0, 5)
+                .map(item => `<li><span class="star-type star-type-${item.type.toLowerCase()}">${getTypeName(item.type)}</span> ${item.name}</li>`)
+                .join('');
+        } else {
+            ui.visibleStarsList.innerHTML = `<li>當前方向無顯著目標</li>`;
+        }
+    }
+    
+    function getTypeName(type) {
+        const names = { "constellation": "星座", "star": "恆星", "planet": "行星" };
+        return names[type] || type;
+    }
 
     init();
 });
