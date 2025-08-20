@@ -149,17 +149,64 @@ select { width: 100%; box-sizing: border-box; padding: 12px 15px; border-radius:
 /* ======================================= */
 /* === 6. 指南針頁面 (compass.html) === */
 /* ======================================= */
-#compass-container { position: relative; width: 250px; height: 250px; margin: 20px auto; }
-#compass-rose, #compass-rose img { width: 100%; height: 100%; transition: transform 0.2s linear; }
-#compass-needle { position: absolute; top: -25px; left: 50%; transform: translateX(-50%); font-size: 24px; font-weight: bold; color: #e74c3c; text-shadow: 0 0 5px #000; }
-#compass-reading { position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%); font-size: 1.5em; color: #ffcc00; background-color: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 10px; }
-#status-bar { display: flex; justify-content: space-between; padding: 10px; background-color: rgba(255, 255, 255, 0.05); border-radius: 8px; margin: 40px 0 20px 0; font-size: 0.9em; color: #ccc; }
+/* --- 實時指南針頁面樣式 (v2.0 升級版) --- */
+#compass-container {
+    position: relative;
+    width: 250px;
+    height: 250px;
+    margin: 20px auto 40px auto; /* 增加底部間距 */
+}
+
+/* 指南針底盤 */
+#compass-rose-img {
+    width: 100%;
+    height: 100%;
+}
+
+/* 指南針指針 */
+#compass-needle-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* 預設指針圖片是朝上的，所以不需要額外旋轉 */
+    transition: transform 0.2s linear; /* 平滑旋轉 */
+    /* 讓紅色指針更突出 */
+    filter: drop-shadow(0 0 3px rgba(255, 82, 82, 0.7));
+}
+
+#compass-reading {
+    text-align: center;
+    font-size: 1.5em;
+    color: #ffcc00;
+    margin-top: -20px; /* 移到更靠近指南針的位置 */
+}
+
+#status-bar {
+    display: grid; /* 使用 Grid 佈局 */
+    grid-template-columns: auto 1fr auto; /* 時間-地點-高度 */
+    gap: 15px; /* 增加間距 */
+    align-items: center;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    margin: 20px 0;
+    font-size: 0.9em;
+    color: #ccc;
+}
 #current-location { text-align: right; }
+#current-altitude { text-align: center; }
+
 #visible-stars-container h2 { font-size: 1.2em; }
 #visible-stars-list { list-style: none; padding: 0; margin: 0; min-height: 150px; }
 #visible-stars-list li { padding: 12px; border-bottom: 1px solid #3a8fb7; }
 #visible-stars-list li:last-child { border-bottom: none; }
 #visible-stars-list .star-type { display: inline-block; padding: 3px 8px; border-radius: 10px; font-size: 0.8em; margin-right: 10px; color: #fff; }
+.star-type-planet { background-color: #c2b280; }
+.star-type-constellation { background-color: #3498db; }
+.star-type-star { background-color: #f1c40f; }
+#permission-button { background-color: #2ecc71; color: #fff; }
 .star-type-planet { background-color: #c2b280; }
 .star-type-constellation { background-color: #3498db; }
 .star-type-star { background-color: #f1c40f; }
