@@ -15,28 +15,33 @@
         <a href="/kidrise-starmap-2025-08/knowledge.html" class="nav-link">天文知識</a>
     </nav>
 
- <div class="content-container">
+  <div class="content-container">
         <div class="section">
-            <div id="compass-container">
-                <img id="compass-rose-img" src="/kidrise-starmap-2025-08/compass-rose.svg" alt="Compass Rose">
-                <img id="compass-needle-img" src="/kidrise-starmap-2025-08/compass-needle.svg" alt="Compass Needle">
-            </div>
-            <div id="compass-reading">--°</div>
-
-            <div id="status-bar">
-                <div id="current-time">--:--:--</div>
-                <div id="current-altitude">海拔: -- 公尺</div>
-                <div id="current-location">正在獲取位置...</div>
+            <div id="permission-request" class="permission-prompt">
+                <h3>啟用實時指南針功能</h3>
+                <p>為了讓指南針和可見星體列表正常運作，我們需要您授權存取裝置的方向感測器。</p>
+                <button id="permission-button" class="control-button">✅ 同意並啟用裝置感測器</button>
             </div>
 
-            <div id="visible-stars-container">
-                <h2>正前方天空可見目標</h2>
-                <ul id="visible-stars-list">
-                    <li id="stars-placeholder">請允許使用感測器以計算可見星體...</li>
-                </ul>
-            </div>
-             <div id="permission-request" style="text-align: center; margin-top: 20px;">
-                <button id="permission-button" class="control-button">啟用裝置感測器</button>
+            <div id="compass-main-content" class="hidden">
+                <div id="compass-container">
+                    <img id="compass-rose-img" src="https://www.svgrepo.com/show/509804/compass-rose.svg" alt="Compass Rose">
+                    <img id="compass-needle-img" src="https://www.svgrepo.com/show/371917/navigation.svg" alt="Compass Needle">
+                </div>
+                <div id="compass-reading">--°</div>
+
+                <div id="status-bar">
+                    <div id="current-time">--:--:--</div>
+                    <div id="current-altitude">海拔: -- 公尺</div>
+                    <div id="current-location">正在獲取位置...</div>
+                </div>
+
+                <div id="visible-stars-container">
+                    <h2>正前方天空可見目標</h2>
+                    <ul id="visible-stars-list">
+                        <li id="stars-placeholder">正在計算...</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
