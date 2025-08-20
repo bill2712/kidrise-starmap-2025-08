@@ -1,4 +1,4 @@
-// compass.js (v2.0 - 修正 Bug 並新增地點名稱功能)
+// compass.js (v2.1 - 修正 Celestial 初始化 Bug 並為地點 API 加入 CORS 代理)
 
 document.addEventListener("DOMContentLoaded", function() {
     if (typeof Celestial === "undefined") { return console.error("核心星圖函式庫 Celestial 未能成功載入。"); }
@@ -27,8 +27,9 @@ document.addEventListener("DOMContentLoaded", function() {
         setInterval(updateTime, 1000);
         getLocation();
         
-        // 關鍵修正：使用與 map.js 相同的、完整的 celestialConfig 來初始化
+        // 關鍵修正 1：加入 width: 1 來繞開函式庫的 getBoundingClientRect Bug
         const celestialConfig = {
+            width: 1, // 只需一個非零值即可
             datapath: "/kidrise-starmap-2025-08/data/",
             planets: { 
                 show: true, 
@@ -57,10 +58,7 @@ document.addEventListener("DOMContentLoaded", function() {
             navigator.geolocation.getCurrentPosition(pos => {
                 const { latitude, longitude } = pos.coords;
                 state.location = [latitude, longitude];
-                
-                // 新功能：獲取經緯度後，呼叫逆地理編碼 API
                 fetchLocationName(latitude, longitude);
-
                 updateVisibleStars();
             }, err => {
                 ui.currentLocation.textContent = "無法獲取位置";
@@ -70,20 +68,18 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    /**
-     * 新功能：根據經緯度獲取地點名稱
-     */
     function fetchLocationName(lat, lon) {
-        // 使用 OpenStreetMap Nominatim 的免費 API
-        const REVERSE_GEOCODING_API = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
+        // 關鍵修正 2：為逆地理編碼 API 加上 CORS 代理
+        const PROXY_URL = 'https://corsproxy.io/?';
+        const ORIGINAL_API_URL = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
+        const REVERSE_GEOCODING_API = PROXY_URL + encodeURIComponent(ORIGINAL_API_URL);
 
         fetch(REVERSE_GEOCODING_API)
             .then(response => response.json())
             .then(data => {
                 if (data && data.address) {
                     const address = data.address;
-                    // 優先顯示城市，其次是省份/州，最後是國家
-                    const locationName = address.city || address.state || address.country || "未知地點";
+                    const locationName = address.city || address.town || address.village || address.country || "未知地點";
                     ui.currentLocation.textContent = `📍 ${locationName}`;
                 } else {
                      ui.currentLocation.textContent = `緯度: ${lat.toFixed(2)}°, 經度: ${lon.toFixed(2)}°`;
@@ -115,10 +111,8 @@ document.addEventListener("DOMContentLoaded", function() {
         const now = performance.now();
         if (now - state.lastUpdate < 100) return;
         state.lastUpdate = now;
-
         let alpha = event.webkitCompassHeading || event.alpha;
         if (alpha === null) return;
-        
         state.azimuth = alpha;
         ui.compassRose.style.transform = `rotate(${-alpha}deg)`;
         ui.compassReading.textContent = `${Math.round(alpha)}°`;
@@ -139,8 +133,8 @@ document.addEventListener("DOMContentLoaded", function() {
         const viewAzimuth = state.azimuth;
         const viewAltitude = 30;
         const viewRadius = 45;
-
         const centerCoords = Celestial.azimuthalToEquatorial({az: viewAzimuth, alt: viewAltitude}, state.location);
+
         state.celestialData.forEach(item => {
             const itemCoords = Celestial.search({ type: item.type, name: item.name });
             if (itemCoords) {
@@ -155,7 +149,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (visibleObjects.length > 0) {
             ui.visibleStarsList.innerHTML = visibleObjects
                 .slice(0, 5)
-                .map(item => `<li><span class="star-type star-type-${item.type.toLowerCase()}">${getTypeName(item.type)}</span> ${item.name}</li>`)
+                .map(item => `<li><span class.star-type star-type-${item.type.toLowerCase()}">${getTypeName(item.type)}</span> ${item.name}</li>`)
                 .join('');
         } else {
             ui.visibleStarsList.innerHTML = `<li>當前方向無顯著目標</li>`;
