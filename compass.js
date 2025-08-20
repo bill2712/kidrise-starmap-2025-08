@@ -1,4 +1,4 @@
-// compass.js (v2.2 - 修正 Celestial 初始化 projection 錯誤)
+// compass.js (v2.3 - 更換為更穩定的 CORS 代理)
 
 document.addEventListener("DOMContentLoaded", function() {
     if (typeof Celestial === "undefined") { return console.error("核心星圖函式庫 Celestial 未能成功載入。"); }
@@ -22,9 +22,8 @@ document.addEventListener("DOMContentLoaded", function() {
         setInterval(updateTime, 1000);
         getLocation();
         
-        // 關鍵修正：加入 projection 屬性
         const celestialConfig = {
-            projection: "stereographic", // 必需的屬性，即使不顯示地圖
+            projection: "stereographic",
             width: 1, 
             datapath: "/kidrise-starmap-2025-08/data/",
             planets: { 
@@ -36,7 +35,6 @@ document.addEventListener("DOMContentLoaded", function() {
             callback: function(err) {
                 if (err) return console.error("Celestial Error:", err);
                 buildCelestialIndex();
-                // 在數據載入後再嘗試更新可見星體
                 updateVisibleStars();
             }
         };
@@ -62,20 +60,31 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function fetchLocationName(lat, lon) {
-        const PROXY_URL = 'https://corsproxy.io/?';
+        // =======================================================
+        // ============== 關鍵修正：更換代理伺服器 ===============
+        // =======================================================
         const ORIGINAL_API_URL = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
-        const REVERSE_GEOCODING_API = PROXY_URL + encodeURIComponent(ORIGINAL_API_URL);
+        // 使用 AllOrigins 代理，它的格式是將原始 URL 作為查詢參數傳遞
+        const REVERSE_GEOCODING_API = `https://api.allorigins.win/raw?url=${encodeURIComponent(ORIGINAL_API_URL)}`;
+        // =======================================================
+        
         fetch(REVERSE_GEOCODING_API, { headers: { 'Accept-Language': 'zh-HK, zh' } })
-            .then(response => response.json())
-            .then(data => {
-                const address = data.address;
-                let locationName = "未知地點";
-                if (address) {
-                    locationName = address.city || address.town || address.county || address.state || address.country;
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP 錯誤! 狀態: ${response.status}`);
                 }
-                const latDMS = decimalToDMS(lat, true);
-                const lonDMS = decimalToDMS(lon, false);
-                ui.currentLocation.textContent = `${locationName} (${latDMS} ${lonDMS})`;
+                return response.json();
+            })
+            .then(data => {
+                if (data && data.address) {
+                    const address = data.address;
+                    const locationName = address.city || address.town || address.county || address.state || address.country || "未知地點";
+                    const latDMS = decimalToDMS(lat, true);
+                    const lonDMS = decimalToDMS(lon, false);
+                    ui.currentLocation.textContent = `${locationName} (${latDMS} ${lonDMS})`;
+                } else {
+                     ui.currentLocation.textContent = `緯度: ${lat.toFixed(2)}°, 經度: ${lon.toFixed(2)}°`;
+                }
             })
             .catch(error => {
                 console.error("逆地理編碼錯誤:", error);
