@@ -15,7 +15,7 @@
         <a href="/kidrise-starmap-2025-08/knowledge.html" class="nav-link">天文知識</a>
     </nav>
 
-  <div class="content-container">
+ <div class="content-container">
         <div class="section">
             <div id="permission-request" class="permission-prompt">
                 <h3>啟用實時指南針功能</h3>
@@ -36,11 +36,14 @@
                     <div id="current-location">正在獲取位置...</div>
                 </div>
 
+                <div class="analyze-button-container">
+                    <button id="analyze-direction-button" class="control-button">🛰️ 分析此方向的可見星體</button>
+                </div>
+
                 <div id="visible-stars-container">
-                    <h2>正前方天空可見目標</h2>
-                    <ul id="visible-stars-list">
-                        <li id="stars-placeholder">正在計算...</li>
-                    </ul>
+                    <div id="visible-stars-list">
+                        <p class="stars-placeholder">請先轉動手機，確定方向後點擊上方「分析」按鈕。</p>
+                    </div>
                 </div>
             </div>
         </div>
