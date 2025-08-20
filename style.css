@@ -211,6 +211,35 @@ select { width: 100%; box-sizing: border-box; padding: 12px 15px; border-radius:
 .star-type-constellation { background-color: #3498db; }
 .star-type-star { background-color: #f1c40f; }
 
+/* --- 指南針頁面權限提示樣式 --- */
+
+.permission-prompt {
+    text-align: center;
+    padding: 30px;
+    background-color: rgba(26, 35, 102, 0.5);
+    border-radius: 10px;
+}
+.permission-prompt h3 {
+    margin-top: 0;
+    color: #ffcc00;
+}
+.permission-prompt p {
+    color: #ccc;
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+.permission-prompt #permission-button {
+    background-color: #2ecc71;
+    color: white;
+    font-size: 1.1em;
+    padding: 12px 25px;
+}
+
+/* 用於隱藏元素的通用 class */
+.hidden {
+    display: none !important;
+}
+
 /* ======================================= */
 /* === 7. 天文知識頁面 (knowledge.html) === */
 /* ======================================= */
