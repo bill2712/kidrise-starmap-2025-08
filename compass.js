@@ -1,7 +1,13 @@
-// compass.js (v2.3 - 更換為更穩定的 CORS 代理)
+// compass.js (v2.4 - 修正初始化 Bug 並新增中文地點格式)
 
 document.addEventListener("DOMContentLoaded", function() {
-    if (typeof Celestial === "undefined") { return console.error("核心星圖函式庫 Celestial 未能成功載入。"); }
+    // 守衛 Celestial 是否存在
+    if (typeof Celestial === "undefined") { 
+        console.error("核心星圖函式庫 Celestial 未能成功載入。");
+        const section = document.querySelector(".section");
+        if(section) section.innerHTML = "<h1>抱歉，核心元件載入失敗</h1>";
+        return;
+    }
 
     const ui = {
         compassRose: document.getElementById('compass-rose'),
@@ -22,9 +28,10 @@ document.addEventListener("DOMContentLoaded", function() {
         setInterval(updateTime, 1000);
         getLocation();
         
+        // 關鍵修正：使用一個最小化但完整的設定檔來安全地初始化 Celestial
         const celestialConfig = {
-            projection: "stereographic",
-            width: 1, 
+            projection: "stereographic", // 必需的屬性
+            width: 1, // 只需一個非零值即可繞開 Bug
             datapath: "/kidrise-starmap-2025-08/data/",
             planets: { 
                 show: true, 
@@ -35,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function() {
             callback: function(err) {
                 if (err) return console.error("Celestial Error:", err);
                 buildCelestialIndex();
-                updateVisibleStars();
+                updateVisibleStars(); // 確保在數據載入後再更新
             }
         };
         Celestial.display(celestialConfig);
@@ -49,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function() {
         navigator.geolocation.getCurrentPosition(pos => {
             const { latitude, longitude, altitude } = pos.coords;
             state.location = [latitude, longitude];
-            fetchLocationName(latitude, longitude);
+            fetchLocationName(latitude, longitude); // 獲取中文地點
             if (altitude) {
                 ui.currentAltitude.textContent = `海拔: ${Math.round(altitude)} 公尺`;
             } else {
@@ -59,37 +66,46 @@ document.addEventListener("DOMContentLoaded", function() {
         }, err => { ui.currentLocation.textContent = "無法獲取位置"; });
     }
 
+    /**
+     * 新功能：根據經緯度獲取格式化的中文地點名稱
+     */
     function fetchLocationName(lat, lon) {
-        // =======================================================
-        // ============== 關鍵修正：更換代理伺服器 ===============
-        // =======================================================
+        const PROXY_URL = 'https://api.allorigins.win/raw?url=';
         const ORIGINAL_API_URL = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
-        // 使用 AllOrigins 代理，它的格式是將原始 URL 作為查詢參數傳遞
-        const REVERSE_GEOCODING_API = `https://api.allorigins.win/raw?url=${encodeURIComponent(ORIGINAL_API_URL)}`;
-        // =======================================================
+        const REVERSE_GEOCODING_API = PROXY_URL + encodeURIComponent(ORIGINAL_API_URL);
         
-        fetch(REVERSE_GEOCODING_API, { headers: { 'Accept-Language': 'zh-HK, zh' } })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP 錯誤! 狀態: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data && data.address) {
-                    const address = data.address;
-                    const locationName = address.city || address.town || address.county || address.state || address.country || "未知地點";
-                    const latDMS = decimalToDMS(lat, true);
-                    const lonDMS = decimalToDMS(lon, false);
-                    ui.currentLocation.textContent = `${locationName} (${latDMS} ${lonDMS})`;
+        fetch(REVERSE_GEOCODING_API, { 
+            headers: { 
+                // 明確要求香港繁體中文
+                'Accept-Language': 'zh-HK, zh-TW, zh' 
+            } 
+        })
+        .then(response => response.json())
+        .then(data => {
+            let locationName = "未知地點";
+            if (data && data.address) {
+                const address = data.address;
+                const country = address.country;
+                // 針對香港和澳門的特殊格式處理
+                if (country === '香港' || country === 'Hong Kong') {
+                    const district = address.suburb || address.city_district || address.city || '';
+                    locationName = `香港・${district}`;
+                } else if (country === '澳門' || country === 'Macau') {
+                    const district = address.city_district || address.city || '';
+                    locationName = `澳門・${district}`;
                 } else {
-                     ui.currentLocation.textContent = `緯度: ${lat.toFixed(2)}°, 經度: ${lon.toFixed(2)}°`;
+                    const city = address.city || address.town || address.village || '';
+                    locationName = `${country}・${city}`;
                 }
-            })
-            .catch(error => {
-                console.error("逆地理編碼錯誤:", error);
-                ui.currentLocation.textContent = `緯度: ${lat.toFixed(2)}°, 經度: ${lon.toFixed(2)}°`;
-            });
+            }
+            const latDMS = decimalToDMS(lat, true);
+            const lonDMS = decimalToDMS(lon, false);
+            ui.currentLocation.textContent = `${locationName} (${latDMS} ${lonDMS})`;
+        })
+        .catch(error => {
+            console.error("逆地理編碼錯誤:", error);
+            ui.currentLocation.textContent = `緯度: ${lat.toFixed(2)}°, 經度: ${lon.toFixed(2)}°`;
+        });
     }
 
     function decimalToDMS(decimal, isLatitude) {
@@ -123,8 +139,8 @@ document.addEventListener("DOMContentLoaded", function() {
         let alpha = event.webkitCompassHeading || event.alpha;
         if (alpha === null) return;
         state.azimuth = alpha;
-        ui.compassNeedle.style.transform = `rotate(${alpha}deg)`;
-        ui.compassReading.textContent = `${Math.round(alpha)}° ${getDirectionFromAzimuth(alpha)}`;
+        if (ui.compassNeedle) ui.compassNeedle.style.transform = `rotate(${alpha}deg)`;
+        if (ui.compassReading) ui.compassReading.textContent = `${Math.round(alpha)}° ${getDirectionFromAzimuth(alpha)}`;
         updateVisibleStars();
     }
     
@@ -135,6 +151,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     
     function buildCelestialIndex() {
+        state.celestialData = [];
         if (Celestial.constellations) { Celestial.constellations.forEach(c => state.celestialData.push({ name: c.name, type: "constellation" })); }
         if (Celestial.data?.stars?.features) { Celestial.data.stars.features.forEach(f => { const nm = f.properties?.name; if (nm && f.properties.mag < 2.5) state.celestialData.push({ name: nm, type: "star" }); }); }
         ["Sun","Moon","Mercury","Venus","Mars","Jupiter","Saturn","Uranus","Neptune"].forEach(p => state.celestialData.push({ name: p, type: "planet" }));
@@ -161,13 +178,15 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
 
-        if (visibleObjects.length > 0) {
-            ui.visibleStarsList.innerHTML = visibleObjects
-                .slice(0, 5)
-                .map(item => `<li><span class="star-type star-type-${item.type.toLowerCase()}">${getTypeName(item.type)}</span> ${item.name}</li>`)
-                .join('');
-        } else {
-            ui.visibleStarsList.innerHTML = `<li>當前方向無顯著目標</li>`;
+        if (ui.visibleStarsList) {
+            if (visibleObjects.length > 0) {
+                ui.visibleStarsList.innerHTML = visibleObjects
+                    .slice(0, 5)
+                    .map(item => `<li><span class="star-type star-type-${item.type.toLowerCase()}">${getTypeName(item.type)}</span> ${item.name}</li>`)
+                    .join('');
+            } else {
+                ui.visibleStarsList.innerHTML = `<li>當前方向無顯著目標</li>`;
+            }
         }
     }
     
