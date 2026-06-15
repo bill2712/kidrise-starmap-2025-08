@@ -1,0 +1,132 @@
+{
+  "zh-TW": {
+    "beginner_guide.headline.title": "第一次手沖咖啡？別擔心，有我們在。",
+    "beginner_guide.headline.subtitle": "我們是你的數位口袋吧台師。不需具備任何專業知識，只要準備好你的咖啡杯，跟著以下三步，今天早上就能親手沖出大師級的完美風味。",
+    "beginner_guide.step1.title": "01. 拿出你的器具",
+    "beginner_guide.step1.desc": "把濾紙放好，倒進你最愛的咖啡粉。在下方選擇你今天使用的器材（例如最常見的 V60 濾杯）。不知道選什麼？直接用預設值就可以！",
+    "beginner_guide.step2.title": "02. 輸入重量，黃金比例解鎖",
+    "beginner_guide.step2.desc": "秤秤看你的咖啡豆有幾克，把數字打進輸入框。我們的系統會一秒為你算出『黃金粉水比』，精準告訴你等一下總共要倒多少毫升（ml）的水，連最適合的水溫都幫你標好了！",
+    "beginner_guide.step3.title": "03. 按下開始，跟著語音倒水",
+    "beginner_guide.step3.desc": "按下計時器！這時請拋開你的手錶。我們的語音教練會親口告訴你何時該『開始悶蒸』、何時該『停止倒水』。你只需要盯著動態進度條，跟著拍子優雅注水，完美咖啡即刻誕生！"
+  },
+  "zh-CN": {
+    "beginner_guide.headline.title": "第一次手冲咖啡？别担心，有我们在。",
+    "beginner_guide.headline.subtitle": "我们是你的数字口袋咖啡师。无需具备任何专业知识，只需准备好你的咖啡杯，跟着以下三步，今天早上就能亲手冲出大师级的完美风味。",
+    "beginner_guide.step1.title": "01. 拿出你的器具",
+    "beginner_guide.step1.desc": "把滤纸放好，倒进你最爱的咖啡粉。在下方选择你今天使用的器材（例如最常见的 V60 滤杯）。不知道选什么？直接用默认值就可以！",
+    "beginner_guide.step2.title": "02. 输入重量，黄金比例解锁",
+    "beginner_guide.step2.desc": "称称看你的咖啡豆有几克，把数字打进输入框。我们的系统会一秒为你算出『黄金粉水比』，精准告诉你等一下总共要倒多少毫升（ml）的水，连最适合的水温都帮你标好了！",
+    "beginner_guide.step3.title": "03. 按下开始，跟着语音倒水",
+    "beginner_guide.step3.desc": "按下计时器！这时请抛开你的手表。我们的语音教练会亲口告诉你何时该『开始闷蒸』、何时该『停止倒水』。你只需要盯着动态进度条，跟着拍子优雅注水，完美咖啡即刻诞生！"
+  },
+  "en": {
+    "beginner_guide.headline.title": "First time brewing? Don't worry, we've got you.",
+    "beginner_guide.headline.subtitle": "We're your digital pocket barista. Zero expertise required. Grab your mug, follow these three steps, and you'll brew a master-level cup right now.",
+    "beginner_guide.step1.title": "01. Get Ready & Select",
+    "beginner_guide.step1.desc": "Set your filter and add your favorite coffee grounds. Select your brewer below (like the popular V60). Not sure what to pick? Just stick with the default settings!",
+    "beginner_guide.step2.title": "02. Type & Calculate",
+    "beginner_guide.step2.desc": "Weigh your coffee beans and type the number into the input. In one second, we'll unlock the 'Golden Ratio', telling you exactly how much water (ml) to pour, complete with the perfect water temperature!",
+    "beginner_guide.step3.title": "03. Follow the Coach",
+    "beginner_guide.step3.desc": "Hit start and put away your watch! Our voice coach will tell you exactly when to 'bloom' and when to 'stop pouring'. Just watch the dynamic progress bar and pour to the rhythm. Perfect coffee is served!"
+  },
+  "fr": {
+    "beginner_guide.headline.title": "Première infusion ? Pas d'inquiétude, on est là.",
+    "beginner_guide.headline.subtitle": "Nous sommes votre barista numérique de poche. Aucune expertise requise. Prenez votre tasse, suivez ces trois étapes et préparez un café de niveau master dès ce matin.",
+    "beginner_guide.step1.title": "01. Préparez-vous et choisissez",
+    "beginner_guide.step1.desc": "Placez votre filtre et ajoutez votre café préféré. Sélectionnez votre cafetière ci-dessous (comme la célèbre V60). Vous ne savez pas quoi choisir ? Laissez les paramètres par défaut !",
+    "beginner_guide.step2.title": "02. Tapez et Calculez",
+    "beginner_guide.step2.desc": "Pesez vos grains et entrez le nombre. En une seconde, nous débloquons le 'Ratio d'or', vous indiquant exactement combien d'eau verser, avec la température parfaite !",
+    "beginner_guide.step3.title": "03. Suivez le Coach",
+    "beginner_guide.step3.desc": "Lancez le chrono et oubliez votre montre ! Notre coach vocal vous dira exactement quand faire la 'pré-infusion' et quand 'arrêter de verser'. Suivez la barre de progression et versez en rythme."
+  },
+  "ja": {
+    "beginner_guide.headline.title": "初めてのハンドドリップ？ご安心ください。",
+    "beginner_guide.headline.subtitle": "私たちはあなたのデジタル・ポケット・バリスタです。専門知識は一切不要。マグカップを用意して、この3つのステップに従うだけで、マスターレベルの完璧な一杯が淹れられます。",
+    "beginner_guide.step1.title": "01. 器具の準備と選択",
+    "beginner_guide.step1.desc": "フィルターをセットし、お好きなコーヒー粉を入れます。下から使用する器具（定番のV60など）を選びます。迷ったらデフォルト設定のままでOK！",
+    "beginner_guide.step2.title": "02. 入力と黄金比の計算",
+    "beginner_guide.step2.desc": "コーヒー豆の重さを量り、数値を入力します。1秒で「黄金の粉水比」を計算し、注ぐべき水量(ml)や最適な水温まで正確に表示します！",
+    "beginner_guide.step3.title": "03. 開始ボタンと音声ガイド",
+    "beginner_guide.step3.desc": "タイマーをスタートさせたら、時計は不要です！音声コーチが「蒸らし開始」「注ぎ終わり」のタイミングを教えてくれます。プログレスバーに合わせて優雅にお湯を注ぐだけ！"
+  },
+  "de": {
+    "beginner_guide.headline.title": "Erstes Mal aufbrühen? Keine Sorge, wir sind hier.",
+    "beginner_guide.headline.subtitle": "Wir sind dein digitaler Taschen-Barista. Keine Vorkenntnisse erforderlich. Schnapp dir deine Tasse, folge diesen drei Schritten und brühe dir sofort einen meisterhaften Kaffee.",
+    "beginner_guide.step1.title": "01. Vorbereiten & Auswählen",
+    "beginner_guide.step1.desc": "Setze den Filter ein und gib deinen Kaffee hinein. Wähle unten deinen Zubereiter (z.B. den beliebten V60). Unsicher? Bleib einfach bei den Standardeinstellungen!",
+    "beginner_guide.step2.title": "02. Eintippen & Berechnen",
+    "beginner_guide.step2.desc": "Wiege deine Bohnen und gib die Zahl ein. In einer Sekunde berechnen wir das 'Goldene Verhältnis' und sagen dir genau, wie viel Wasser (ml) bei welcher Temperatur du brauchst!",
+    "beginner_guide.step3.title": "03. Dem Coach folgen",
+    "beginner_guide.step3.desc": "Start drücken und Uhr weglegen! Unser Sprach-Coach sagt dir genau, wann du 'bloomen' und wann du aufhören sollst. Folge einfach dem Fortschrittsbalken und gieße im Rhythmus."
+  },
+  "es": {
+    "beginner_guide.headline.title": "¿Primera vez preparando café? No te preocupes, estamos aquí.",
+    "beginner_guide.headline.subtitle": "Somos tu barista digital de bolsillo. Sin conocimientos previos. Toma tu taza, sigue estos tres pasos y prepararás un café de nivel maestro hoy mismo.",
+    "beginner_guide.step1.title": "01. Prepárate y Elige",
+    "beginner_guide.step1.desc": "Coloca tu filtro y añade tu café favorito. Selecciona tu cafetera abajo (como la popular V60). ¿No estás seguro? ¡Usa los valores por defecto!",
+    "beginner_guide.step2.title": "02. Escribe y Calcula",
+    "beginner_guide.step2.desc": "Pesa tus granos de café e introduce el número. En un segundo calcularemos tu 'Proporción Dorada', indicándote exactamente cuánta agua verter (ml) y la temperatura ideal.",
+    "beginner_guide.step3.title": "03. Sigue al Entrenador",
+    "beginner_guide.step3.desc": "¡Presiona inicio y olvídate del reloj! Nuestro entrenador de voz te dirá exactamente cuándo iniciar la 'pre-infusión' y cuándo detenerte. Solo sigue la barra de progreso."
+  },
+  "pt": {
+    "beginner_guide.headline.title": "Primeira vez fazendo café? Não se preocupe, estamos aqui.",
+    "beginner_guide.headline.subtitle": "Somos o seu barista digital de bolso. Nenhuma experiência necessária. Pegue sua caneca, siga estes três passos e prepare um café perfeito de mestre hoje mesmo.",
+    "beginner_guide.step1.title": "01. Prepare-se e Escolha",
+    "beginner_guide.step1.desc": "Coloque o filtro e adicione o seu café favorito. Selecione o seu método abaixo (como o popular V60). Na dúvida? É só usar as configurações padrão!",
+    "beginner_guide.step2.title": "02. Digite e Calcule",
+    "beginner_guide.step2.desc": "Pese os seus grãos e digite o número. Em um segundo, desbloqueamos a 'Proporção Áurea', dizendo exatamente quantos ml de água usar e qual a temperatura ideal!",
+    "beginner_guide.step3.title": "03. Siga o Treinador",
+    "beginner_guide.step3.desc": "Aperte o play e esqueça o relógio! Nosso treinador de voz dirá exatamente quando fazer o 'bloom' e quando parar de despejar. Basta seguir a barra de progresso visual."
+  },
+  "ru": {
+    "beginner_guide.headline.title": "Впервые завариваете кофе? Не волнуйтесь, мы поможем.",
+    "beginner_guide.headline.subtitle": "Мы — ваш цифровой карманный бариста. Опыт не требуется. Возьмите кружку, выполните эти три шага и приготовьте идеальный кофе уровня мастера.",
+    "beginner_guide.step1.title": "01. Подготовка и выбор",
+    "beginner_guide.step1.desc": "Положите фильтр и добавьте ваш любимый кофе. Выберите ниже ваш метод (например, V60). Не знаете, что выбрать? Оставьте настройки по умолчанию!",
+    "beginner_guide.step2.title": "02. Ввод и расчет",
+    "beginner_guide.step2.desc": "Взвесьте зерна и введите число. За секунду мы рассчитаем 'Золотую пропорцию', точно сказав, сколько миллилитров воды налить и какая температура нужна!",
+    "beginner_guide.step3.title": "03. Следуйте за тренером",
+    "beginner_guide.step3.desc": "Жмите старт и забудьте про часы! Наш голосовой тренер скажет, когда начинать 'цветение' и когда остановиться. Просто следите за прогрессом и наливайте."
+  },
+  "hi": {
+    "beginner_guide.headline.title": "पहली बार कॉफी बना रहे हैं? चिंता न करें, हम हैं ना।",
+    "beginner_guide.headline.subtitle": "हम आपके डिजिटल पॉकेट बरिस्ता हैं। किसी विशेषज्ञता की आवश्यकता नहीं है। अपना मग लें, इन तीन चरणों का पालन करें, और एकदम मास्टर-लेवल कॉफी बनाएं।",
+    "beginner_guide.step1.title": "01. तैयार हों और चुनें",
+    "beginner_guide.step1.desc": "अपना फिल्टर लगाएं और अपनी पसंदीदा कॉफी डालें। नीचे अपना उपकरण चुनें (जैसे V60)। समझ नहीं आ रहा? बस डिफ़ॉल्ट सेटिंग्स का उपयोग करें!",
+    "beginner_guide.step2.title": "02. टाइप करें और गणना करें",
+    "beginner_guide.step2.desc": "अपनी कॉफी बीन्स का वजन करें और नंबर दर्ज करें। एक सेकंड में, हम 'गोल्डन अनुपात' की गणना करेंगे, जो आपको बताएगा कि कितना पानी (ml) डालना है!",
+    "beginner_guide.step3.title": "03. कोच का पालन करें",
+    "beginner_guide.step3.desc": "स्टार्ट दबाएं और अपनी घड़ी भूल जाएं! हमारा वॉयस कोच आपको बताएगा कि कब रुकना है और कब पानी डालना है। बस प्रोग्रेस बार का पालन करें।"
+  },
+  "bn": {
+    "beginner_guide.headline.title": "প্রথমবার কফি তৈরি করছেন? চিন্তা করবেন না, আমরা আছি।",
+    "beginner_guide.headline.subtitle": "আমরা আপনার ডিজিটাল পকেট বারিস্তা। কোনো অভিজ্ঞতার প্রয়োজন নেই। আপনার মগ নিন, এই তিনটি ধাপ অনুসরণ করুন, এবং একটি মাস্টার-লেভেল কফি তৈরি করুন।",
+    "beginner_guide.step1.title": "01. প্রস্তুত হন এবং চয়ন করুন",
+    "beginner_guide.step1.desc": "আপনার ফিল্টার সেট করুন এবং কফি যোগ করুন। নীচে আপনার পদ্ধতি নির্বাচন করুন (যেমন V60)। নিশ্চিত নন? শুধু ডিফল্ট সেটিংস ব্যবহার করুন!",
+    "beginner_guide.step2.title": "02. টাইপ করুন এবং গণনা করুন",
+    "beginner_guide.step2.desc": "আপনার কফি বিন ওজন করুন এবং নম্বর ইনপুট করুন। এক সেকেন্ডের মধ্যে, আমরা 'গোল্ডেন রেশিও' গণনা করব, আপনাকে ঠিক কত জল ঢালতে হবে তা জানাব!",
+    "beginner_guide.step3.title": "03. কোচের নির্দেশ অনুসরণ করুন",
+    "beginner_guide.step3.desc": "স্টার্ট টিপুন এবং আপনার ঘড়ি ভুলে যান! আমাদের ভয়েস কোচ আপনাকে কখন ঢালতে হবে তা বলে দেবে। শুধু প্রগ্রেস বার অনুসরণ করুন।"
+  },
+  "ar": {
+    "beginner_guide.headline.title": "أول مرة تحضر القهوة؟ لا تقلق، نحن هنا.",
+    "beginner_guide.headline.subtitle": "نحن باريستا الجيب الرقمي الخاص بك. لا حاجة لأي خبرة. أحضر كوبك، اتبع هذه الخطوات الثلاث، وحضر قهوة مثالية على مستوى الخبراء.",
+    "beginner_guide.step1.title": "01. استعد واختر",
+    "beginner_guide.step1.desc": "ضع الفلتر وأضف قهوتك المفضلة. اختر الأداة أدناه (مثل V60). لست متأكداً؟ استخدم الإعدادات الافتراضية!",
+    "beginner_guide.step2.title": "02. اكتب واحسب",
+    "beginner_guide.step2.desc": "زن حبوب القهوة واكتب الرقم. في ثانية واحدة، سنحسب 'النسبة الذهبية'، لتخبرك بالكمية الدقيقة للماء ودرجة الحرارة المثالية!",
+    "beginner_guide.step3.title": "03. اتبع المدرب",
+    "beginner_guide.step3.desc": "اضغط على ابدأ وانسَ ساعتك! سيخبرك المدرب الصوتي متى تبدأ ومتى تتوقف. فقط اتبع شريط التقدم المرئي."
+  },
+  "ur": {
+    "beginner_guide.headline.title": "پہلی بار کافی بنا رہے ہیں؟ فکر نہ کریں، ہم آپ کے ساتھ ہیں۔",
+    "beginner_guide.headline.subtitle": "ہم آپ کے ڈیجیٹل پاکٹ باریستا ہیں۔ کسی تجربے کی ضرورت نہیں۔ اپنا کپ لیں، ان تین مراحل پر عمل کریں، اور بہترین کافی تیار کریں۔",
+    "beginner_guide.step1.title": "01. تیار ہوں اور منتخب کریں",
+    "beginner_guide.step1.desc": "اپنا فلٹر سیٹ کریں اور کافی شامل کریں۔ نیچے اپنا طریقہ منتخب کریں (جیسے V60)۔ کچھ سمجھ نہیں آ رہا؟ بس ڈیفالٹ سیٹنگز استعمال کریں!",
+    "beginner_guide.step2.title": "02. ٹائپ کریں اور حساب لگائیں",
+    "beginner_guide.step2.desc": "اپنی کافی کا وزن کریں اور نمبر درج کریں۔ ایک سیکنڈ میں، ہم 'گولڈن ریشو' کا حساب لگائیں گے، کہ کتنا پانی (ml) ڈالنا ہے!",
+    "beginner_guide.step3.title": "03. کوچ کی پیروی کریں",
+    "beginner_guide.step3.desc": "سٹارٹ دبائیں اور اپنی گھڑی بھول جائیں! ہمارا وائس کوچ آپ کو بتائے گا کہ کب رکنا ہے اور کب پانی ڈالنا ہے۔ بس پروگریس بار کی پیروی کریں۔"
+  }
+}
