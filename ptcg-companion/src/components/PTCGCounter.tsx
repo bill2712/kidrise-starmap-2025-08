@@ -61,6 +61,14 @@ const initialPlayerState = (): PlayerState => ({
   activeType: 'None',
 });
 
+// TypeScript Interfaces for Native Web APIs
+interface WakeLockSentinel {
+  release(): Promise<void>;
+}
+interface NavigatorWithWakeLock extends Navigator {
+  wakeLock?: { request(type: 'screen'): Promise<WakeLockSentinel> };
+}
+
 export default function PTCGCounter({ lang = 'en' }: { lang?: string }) {
   const [p1, setP1] = useState<PlayerState>(initialPlayerState());
   const [p2, setP2] = useState<PlayerState>(initialPlayerState());
@@ -82,7 +90,7 @@ export default function PTCGCounter({ lang = 'en' }: { lang?: string }) {
   const audioCtxRef = useRef<AudioContext | null>(null);
 
   useEffect(() => {
-    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+    const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
     if (AudioContextClass) {
       audioCtxRef.current = new AudioContextClass();
     }
@@ -108,17 +116,26 @@ export default function PTCGCounter({ lang = 'en' }: { lang?: string }) {
   }, []);
 
   useEffect(() => {
-    let wakeLock: any = null;
+    let wakeLock: WakeLockSentinel | null = null;
+    const nav = navigator as unknown as NavigatorWithWakeLock;
+    
     const requestWakeLock = async () => {
       try {
-        if ('wakeLock' in navigator) wakeLock = await (navigator as any).wakeLock.request('screen');
+        if (nav.wakeLock) wakeLock = await nav.wakeLock.request('screen');
       } catch (err) {}
     };
+    
     requestWakeLock();
-    document.addEventListener('visibilitychange', () => {
+    
+    const handleVisibilityChange = () => {
       if (document.visibilityState === 'visible') requestWakeLock();
-    });
-    return () => { if (wakeLock !== null) wakeLock.release(); };
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => { 
+      if (wakeLock !== null) wakeLock.release().catch(() => {});
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
   useEffect(() => {
@@ -188,7 +205,7 @@ export default function PTCGCounter({ lang = 'en' }: { lang?: string }) {
   };
 
   const PlayerArea = ({ state, player, historyLen, isRotated, isAnim }: { state: PlayerState, player: 'p1' | 'p2', historyLen: number, isRotated: boolean, isAnim: boolean }) => {
-    const adjustHp = (amount: number) => updatePlayer(player, { hp: Math.max(0, state.hp + amount) });
+    const adjustHp = (amount: number) => updatePlayer(player, { hp: Math.max(0, Math.min(990, state.hp + amount)) });
     const togglePrize = (index: number) => {
       const newPrizes = [...state.prizes];
       newPrizes[index] = !newPrizes[index];
@@ -331,7 +348,10 @@ export default function PTCGCounter({ lang = 'en' }: { lang?: string }) {
         </div>
 
         {/* Strict AdSense Container (Solid rigid background) */}
-        <div className="w-[320px] h-[50px] overflow-hidden bg-neutral-900 flex items-center justify-center rounded shrink-0 relative">
+        <div 
+          className="bg-neutral-900 flex items-center justify-center rounded shrink-0 relative"
+          style={{ minWidth: '320px', minHeight: '50px', width: '320px', height: '50px', overflow: 'hidden' }}
+        >
           <span className="text-neutral-500 text-[10px] uppercase font-mono tracking-wider absolute">
             Google AdSense Banner
           </span>
