@@ -1,21 +1,57 @@
 ---
 import '../styles/global.css';
+import { langs } from '../locales/translations';
 
 interface Props {
   title?: string;
   description?: string;
+  keywords?: string;
+  lang?: string;
 }
 
-const { title = "PTCG Companion", description = "Live Damage Counter & Match Assistant" } = Astro.props;
+const { 
+  title = "PTCG Companion - Live Match Assistant", 
+  description = "The ultimate esports-grade Pokémon TCG damage counter and match assistant. Track VSTAR, special conditions, and damage with zero layout shift.", 
+  keywords = "ptcg damage counter app, pokemon tcg match assistant, pokemon card battle calculator, vstar power tracker, tcg battle calculator", 
+  lang = "en" 
+} = Astro.props;
+
+// Construct Canonical URL mathematically cleanly
+const siteUrl = "https://ptcg-companion.pages.dev";
+const canonicalPath = lang === 'en' ? '' : `/${lang}/`;
+const canonicalURL = new URL(canonicalPath, siteUrl).href;
 ---
 
 <!doctype html>
-<html lang="zh-TW">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="keywords" content={keywords} />
+    
+    <link rel="canonical" href={canonicalURL} />
+    
+    {/* Surgical Hreflang Architecture */}
+    {langs.map(l => (
+      <link rel="alternate" hreflang={l} href={new URL(l === 'en' ? '' : `/${l}/`, siteUrl).href} />
+    ))}
+    <link rel="alternate" hreflang="x-default" href={siteUrl} />
+
+    {/* Open Graph / Social Preview Graph Overhaul */}
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={`${siteUrl}/og-image.jpg`} />
+    
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonicalURL} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={`${siteUrl}/og-image.jpg`} />
+
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-9R61GZ220P"></script>
     <script>

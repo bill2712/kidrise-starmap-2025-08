@@ -4,6 +4,9 @@ export type Lang = typeof langs[number];
 export const t = (lang: string, key: string): string => {
   const dictionary: Record<string, Record<string, string>> = {
     'en': {
+      metaTitle: 'PTCG Companion - Live Match Assistant',
+      metaDesc: 'The ultimate esports-grade Pokémon TCG damage counter and match assistant. Track VSTAR, special conditions, and damage with zero layout shift.',
+      metaKeywords: 'ptcg damage counter app, pokemon tcg match assistant, pokemon card battle calculator, vstar power tracker, tcg battle calculator',
       damageCounters: 'Damage Counters',
       undo: 'Undo ↩',
       reset: 'Reset',
@@ -26,6 +29,9 @@ export const t = (lang: string, key: string): string => {
       flipping: 'FLIP...',
     },
     'zh-TW': {
+      metaTitle: 'PTCG Companion - 寶可夢卡牌對戰助手',
+      metaDesc: '電競級寶可夢TCG傷害指示物與對戰助手。完美追蹤VSTAR、特殊狀態與血量。',
+      metaKeywords: '寶可夢卡牌計分板, PTCG傷害指示物, 寶可夢TCG對戰助手, VSTAR追蹤器, 寶可夢比賽工具',
       damageCounters: '傷害指示物',
       undo: '復原 ↩',
       reset: '清除',
@@ -48,6 +54,9 @@ export const t = (lang: string, key: string): string => {
       flipping: '擲...',
     },
     'zh-CN': {
+      metaTitle: 'PTCG Companion - 宝可梦卡牌对战助手',
+      metaDesc: '电竞级宝可梦TCG伤害指示物与对战助手。完美追踪VSTAR、特殊状态与血量。',
+      metaKeywords: '宝可梦卡牌计分板, PTCG伤害指示物, 宝可梦TCG对战助手, VSTAR追踪器, 宝可梦比赛工具',
       damageCounters: '伤害指示物',
       undo: '撤销 ↩',
       reset: '清除',
@@ -70,6 +79,9 @@ export const t = (lang: string, key: string): string => {
       flipping: '掷...',
     },
     'ja': {
+      metaTitle: 'PTCG Companion - ポケカ対戦ツール',
+      metaDesc: 'eスポーツ仕様のポケモンカードゲーム用ダメカン＆対戦アシスタント。VSTARパワーや特殊状態を正確に記録。',
+      metaKeywords: 'ポケカ ダメカン 計算, ポケモンカード 対戦ツール, VSTARパワー 記録, PTCG カウンター, ポケカ 大会用ツール',
       damageCounters: 'ダメカン',
       undo: '元に戻す ↩',
       reset: 'リセット',
@@ -92,6 +104,9 @@ export const t = (lang: string, key: string): string => {
       flipping: '投げる...',
     },
     'fr': {
+      metaTitle: 'PTCG Companion - Assistant de Match',
+      metaDesc: 'Le meilleur compteur de dégâts et assistant pour le JCC Pokémon. Suivez vos VSTAR et États Spéciaux facilement.',
+      metaKeywords: 'compteur de dégâts pokemon, assistant match jcc pokemon, calculatrice combat carte, tracker vstar',
       damageCounters: 'Marqueurs de Dégâts',
       undo: 'Annuler ↩',
       reset: 'Rénit',
@@ -114,6 +129,9 @@ export const t = (lang: string, key: string): string => {
       flipping: 'LANC...',
     },
     'de': {
+      metaTitle: 'PTCG Companion - Match-Assistent',
+      metaDesc: 'Der ultimative Schadensmarken-Zähler für das Pokémon Sammelkartenspiel. Behalte VSTAR und Spezielle Zustände im Blick.',
+      metaKeywords: 'pokemon tcg schadensmarken, pokemon karten kampfrechner, vstar tracker, ptcg match-assistent',
       damageCounters: 'Schadensmarken',
       undo: 'Rückgängig ↩',
       reset: 'Reset',
@@ -136,6 +154,9 @@ export const t = (lang: string, key: string): string => {
       flipping: 'WURF...',
     },
     'es': {
+      metaTitle: 'PTCG Companion - Asistente de Combate',
+      metaDesc: 'El mejor contador de daño y asistente para el JCC Pokémon. Rastrea VSTAR y Condiciones Especiales sin fallos.',
+      metaKeywords: 'contador de daño pokemon, asistente combate jcc pokemon, calculadora cartas pokemon, tracker vstar',
       damageCounters: 'Contadores de Daño',
       undo: 'Deshacer ↩',
       reset: 'Restablecer',
@@ -158,6 +179,9 @@ export const t = (lang: string, key: string): string => {
       flipping: 'LANZ...',
     },
     'pt': {
+      metaTitle: 'PTCG Companion - Assistente de Partida',
+      metaDesc: 'O melhor contador de dano e assistente para o Pokémon TCG. Rastreie VSTAR e Condições Especiais.',
+      metaKeywords: 'contador de dano pokemon, assistente partida pokémon tcg, calculadora de cartas pokemon, rastreador vstar',
       damageCounters: 'Contadores de Dano',
       undo: 'Desfazer ↩',
       reset: 'Redefinir',
@@ -180,6 +204,9 @@ export const t = (lang: string, key: string): string => {
       flipping: 'JOG...',
     },
     'ru': {
+      metaTitle: 'PTCG Companion - Помощник в матче',
+      metaDesc: 'Лучший счетчик урона и помощник для Pokémon TCG. Отслеживайте VSTAR и особые состояния.',
+      metaKeywords: 'счетчик урона покемон, помощник pokemon tcg, калькулятор боя карт покемон, vstar трекер',
       damageCounters: 'Счетчики Урона',
       undo: 'Отмена ↩',
       reset: 'Сброс',
@@ -202,6 +229,9 @@ export const t = (lang: string, key: string): string => {
       flipping: 'БРОС...',
     },
     'hi': {
+      metaTitle: 'PTCG Companion - मैच सहायक',
+      metaDesc: 'Pokémon TCG के लिए सर्वश्रेष्ठ क्षति काउंटर और मैच सहायक। VSTAR और विशेष स्थितियों को ट्रैक करें।',
+      metaKeywords: 'pokemon tcg damage counter, pokemon tcg match assistant, pokemon card calculator, vstar tracker',
       damageCounters: 'क्षति काउंटर',
       undo: 'पूर्ववत ↩',
       reset: 'रीसेट',
@@ -224,6 +254,9 @@ export const t = (lang: string, key: string): string => {
       flipping: 'उछाल...',
     },
     'bn': {
+      metaTitle: 'PTCG Companion - ম্যাচ সহকারী',
+      metaDesc: 'Pokémon TCG এর জন্য সেরা ড্যামেজ কাউন্টার এবং ম্যাচ সহকারী। VSTAR এবং বিশেষ শর্ত ট্র্যাক করুন।',
+      metaKeywords: 'pokemon tcg damage counter, pokemon tcg match assistant, pokemon card calculator, vstar tracker',
       damageCounters: 'ক্ষতি কাউন্টার',
       undo: 'পূর্বাবস্থায় ↩',
       reset: 'রিসেট',
@@ -246,6 +279,9 @@ export const t = (lang: string, key: string): string => {
       flipping: 'নিক্ষেপ...',
     },
     'ar': {
+      metaTitle: 'PTCG Companion - مساعد المباريات',
+      metaDesc: 'أفضل عداد ضرر ومساعد لمباريات بوكيمون TCG. تتبع VSTAR والحالات الخاصة بسهولة.',
+      metaKeywords: 'عداد ضرر بوكيمون, مساعد مباريات بوكيمون, حاسبة بطاقات بوكيمون, vstar tracker',
       damageCounters: 'عدادات الضرر',
       undo: 'تراجع ↩',
       reset: 'إعادة',
@@ -268,6 +304,9 @@ export const t = (lang: string, key: string): string => {
       flipping: 'رمي...',
     },
     'ur': {
+      metaTitle: 'PTCG Companion - میچ اسسٹنٹ',
+      metaDesc: 'Pokémon TCG کے لیے بہترین ڈیمیج کاؤنٹر اور میچ اسسٹنٹ۔ VSTAR اور خصوصی حالات کو ٹریک کریں۔',
+      metaKeywords: 'pokemon tcg damage counter, pokemon tcg match assistant, pokemon card calculator, vstar tracker',
       damageCounters: 'نقصان کاؤنٹرز',
       undo: 'واپس ↩',
       reset: 'ری سیٹ',

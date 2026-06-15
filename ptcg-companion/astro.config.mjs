@@ -2,14 +2,15 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@astrojs/react';
+import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://bill2712.github.io',
+  site: 'https://ptcg-companion.pages.dev',
   vite: {
     plugins: [tailwindcss()],
     esbuild: {
       drop: ['console', 'debugger'],
     }
   },
-  integrations: [react()]
+  integrations: [react(), sitemap()]
 });

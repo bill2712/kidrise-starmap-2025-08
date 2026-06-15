@@ -1,17 +1,21 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import PTCGCounter from '../../components/PTCGCounter';
-import { langs } from '../../locales/translations';
+import { langs, t } from '../../locales/translations';
 
 export function getStaticPaths() {
   return langs.map(lang => ({ params: { lang } }));
 }
 
 const { lang } = Astro.params;
+
+const title = t(lang, 'metaTitle');
+const description = t(lang, 'metaDesc');
+const keywords = t(lang, 'metaKeywords');
 ---
 
-<Layout title={`PTCG Companion - ${lang}`}>
-  <main class="w-full min-h-screen bg-black flex items-center justify-center">
-    <PTCGCounter lang={lang} client:load />
-  </main>
+<Layout title={title} description={description} keywords={keywords} lang={lang}>
+	<main class="w-full min-h-screen bg-black flex items-center justify-center">
+		<PTCGCounter lang={lang} client:load />
+	</main>
 </Layout>
