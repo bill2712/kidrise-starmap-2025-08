@@ -5,7 +5,8 @@ import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://ptcg-companion.pages.dev',
+  site: 'https://bill2712.github.io',
+  base: '/kidrise-starmap-2025-08',
   vite: {
     plugins: [tailwindcss()],
   },
