@@ -8,9 +8,6 @@ export default defineConfig({
   site: 'https://ptcg-companion.pages.dev',
   vite: {
     plugins: [tailwindcss()],
-    esbuild: {
-      drop: ['console', 'debugger'],
-    }
   },
   integrations: [react(), sitemap()]
 });
