@@ -59,6 +59,16 @@ const canonicalURL = new URL(canonicalPath, siteUrl).href;
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-9R61GZ220P');
+
+      // Nuke legacy Coffee Timer Service Workers
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          for(let registration of registrations) {
+            registration.unregister();
+            console.log('Legacy ServiceWorker unregistered.');
+          }
+        });
+      }
     </script>
   </head>
   <body class="bg-black text-white min-h-screen selection:bg-gray-800">
