@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { t } from '../locales/translations';
 
 type ElementType = 'None' | 'Grass' | 'Fire' | 'Water' | 'Lightning' | 'Psychic' | 'Fighting' | 'Darkness' | 'Metal' | 'Dragon' | 'Colorless' | 'Stellar';
 
@@ -60,7 +61,7 @@ const initialPlayerState = (): PlayerState => ({
   activeType: 'None',
 });
 
-export default function PTCGCounter() {
+export default function PTCGCounter({ lang = 'en' }: { lang?: string }) {
   const [p1, setP1] = useState<PlayerState>(initialPlayerState());
   const [p2, setP2] = useState<PlayerState>(initialPlayerState());
   
@@ -217,13 +218,13 @@ export default function PTCGCounter() {
         {/* HP Radar & Turn Mechanics */}
         <div className="flex flex-col w-full mt-1">
           <div className="flex items-center justify-between w-full mb-1">
-            <span className="text-neutral-500 text-[10px] tracking-widest font-bold uppercase">Damage Counters</span>
+            <span className="text-neutral-500 text-[10px] tracking-widest font-bold uppercase">{t(lang, 'damageCounters')}</span>
             <button 
               onClick={() => undoPlayer(player)} 
               disabled={historyLen === 0}
               className={`text-[9px] font-bold tracking-widest uppercase border px-2 py-0.5 rounded transition-all ${historyLen > 0 ? 'text-blue-400 border-blue-900 bg-blue-950/30 active:scale-95' : 'text-neutral-700 border-neutral-800 bg-transparent opacity-50'}`}
             >
-              Undo ↩
+              {t(lang, 'undo')}
             </button>
           </div>
           
@@ -232,15 +233,15 @@ export default function PTCGCounter() {
               <span className="text-5xl font-black font-mono tracking-tighter text-red-500" style={{ textShadow: '0 0 15px rgba(239,68,68,0.5)' }}>
                 {state.hp}
               </span>
-              <button onClick={() => updatePlayer(player, { hp: 0 })} className="absolute bottom-1 right-2 text-neutral-500 text-[8px] hover:text-white uppercase active:scale-95">Reset</button>
+              <button onClick={() => updatePlayer(player, { hp: 0 })} className="absolute bottom-1 right-2 text-neutral-500 text-[8px] hover:text-white uppercase active:scale-95">{t(lang, 'reset')}</button>
             </div>
 
             <div className="flex flex-col gap-1 w-28">
-              <button onClick={() => updatePlayer(player, { retreatUsed: !state.retreatUsed })} className={`h-9 rounded font-bold text-[9px] uppercase tracking-wider border transition-all ${state.retreatUsed ? 'bg-neutral-800 border-neutral-700 text-neutral-500 line-through' : 'bg-neutral-900 border-neutral-600 text-neutral-300'}`}>
-                Retreat Used
+              <button onClick={() => updatePlayer(player, { retreatUsed: !state.retreatUsed })} className={`h-9 rounded font-bold text-[8px] sm:text-[9px] uppercase tracking-wider border transition-all ${state.retreatUsed ? 'bg-neutral-800 border-neutral-700 text-neutral-500 line-through' : 'bg-neutral-900 border-neutral-600 text-neutral-300'}`}>
+                {t(lang, 'retreatUsed')}
               </button>
-              <button onClick={() => updatePlayer(player, { abilityUsed: !state.abilityUsed })} className={`h-9 rounded font-bold text-[9px] uppercase tracking-wider border transition-all ${state.abilityUsed ? 'bg-neutral-800 border-neutral-700 text-neutral-500 line-through' : 'bg-rose-950 border-rose-800 text-rose-400'}`}>
-                Ability (1/Turn)
+              <button onClick={() => updatePlayer(player, { abilityUsed: !state.abilityUsed })} className={`h-9 rounded font-bold text-[8px] sm:text-[9px] uppercase tracking-wider border transition-all ${state.abilityUsed ? 'bg-neutral-800 border-neutral-700 text-neutral-500 line-through' : 'bg-rose-950 border-rose-800 text-rose-400'}`}>
+                {t(lang, 'ability')}
               </button>
             </div>
           </div>
@@ -266,11 +267,11 @@ export default function PTCGCounter() {
 
         {/* Status Conditions */}
         <div className="grid grid-cols-5 gap-1 w-full mt-2">
-          <button onClick={() => updatePlayer(player, { poisoned: !state.poisoned })} className={`h-8 rounded-lg font-bold text-[8px] uppercase tracking-wider border ${state.poisoned ? 'shadow-[0_0_15px_rgba(34,197,94,0.6)] border-green-500 bg-green-950/40 text-green-400' : 'border-neutral-800 bg-neutral-900 text-neutral-600'}`}>Poison</button>
-          <button onClick={() => updatePlayer(player, { burned: !state.burned })} className={`h-8 rounded-lg font-bold text-[8px] uppercase tracking-wider border ${state.burned ? 'shadow-[0_0_15px_rgba(249,115,22,0.6)] border-orange-500 bg-orange-950/40 text-orange-400' : 'border-neutral-800 bg-neutral-900 text-neutral-600'}`}>Burn</button>
-          <button onClick={() => updatePlayer(player, { asleep: !state.asleep })} className={`h-8 rounded-lg font-bold text-[8px] uppercase tracking-wider border ${state.asleep ? 'shadow-[0_0_15px_rgba(59,130,246,0.6)] border-blue-500 bg-blue-950/40 text-blue-400' : 'border-neutral-800 bg-neutral-900 text-neutral-600'}`}>Asleep</button>
-          <button onClick={() => updatePlayer(player, { paralyzed: !state.paralyzed })} className={`h-8 rounded-lg font-bold text-[8px] uppercase tracking-wider border ${state.paralyzed ? 'shadow-[0_0_15px_rgba(234,179,8,0.6)] border-yellow-500 bg-yellow-950/40 text-yellow-400' : 'border-neutral-800 bg-neutral-900 text-neutral-600'}`}>Para</button>
-          <button onClick={() => updatePlayer(player, { confused: !state.confused })} className={`h-8 rounded-lg font-bold text-[8px] uppercase tracking-wider border ${state.confused ? 'shadow-[0_0_15px_rgba(168,85,247,0.6)] border-purple-500 bg-purple-950/40 text-purple-400' : 'border-neutral-800 bg-neutral-900 text-neutral-600'}`}>Confuse</button>
+          <button onClick={() => updatePlayer(player, { poisoned: !state.poisoned })} className={`h-8 rounded-lg font-bold text-[7px] sm:text-[8px] uppercase tracking-wider border ${state.poisoned ? 'shadow-[0_0_15px_rgba(34,197,94,0.6)] border-green-500 bg-green-950/40 text-green-400' : 'border-neutral-800 bg-neutral-900 text-neutral-600'}`}>{t(lang, 'poison')}</button>
+          <button onClick={() => updatePlayer(player, { burned: !state.burned })} className={`h-8 rounded-lg font-bold text-[7px] sm:text-[8px] uppercase tracking-wider border ${state.burned ? 'shadow-[0_0_15px_rgba(249,115,22,0.6)] border-orange-500 bg-orange-950/40 text-orange-400' : 'border-neutral-800 bg-neutral-900 text-neutral-600'}`}>{t(lang, 'burn')}</button>
+          <button onClick={() => updatePlayer(player, { asleep: !state.asleep })} className={`h-8 rounded-lg font-bold text-[7px] sm:text-[8px] uppercase tracking-wider border ${state.asleep ? 'shadow-[0_0_15px_rgba(59,130,246,0.6)] border-blue-500 bg-blue-950/40 text-blue-400' : 'border-neutral-800 bg-neutral-900 text-neutral-600'}`}>{t(lang, 'asleep')}</button>
+          <button onClick={() => updatePlayer(player, { paralyzed: !state.paralyzed })} className={`h-8 rounded-lg font-bold text-[7px] sm:text-[8px] uppercase tracking-wider border ${state.paralyzed ? 'shadow-[0_0_15px_rgba(234,179,8,0.6)] border-yellow-500 bg-yellow-950/40 text-yellow-400' : 'border-neutral-800 bg-neutral-900 text-neutral-600'}`}>{t(lang, 'para')}</button>
+          <button onClick={() => updatePlayer(player, { confused: !state.confused })} className={`h-8 rounded-lg font-bold text-[7px] sm:text-[8px] uppercase tracking-wider border ${state.confused ? 'shadow-[0_0_15px_rgba(168,85,247,0.6)] border-purple-500 bg-purple-950/40 text-purple-400' : 'border-neutral-800 bg-neutral-900 text-neutral-600'}`}>{t(lang, 'confuse')}</button>
         </div>
 
         {/* Legacy Markers */}
@@ -298,11 +299,11 @@ export default function PTCGCounter() {
           {/* Turn Engine - Expanded width & padding */}
           <div className="flex flex-col items-center justify-center flex-1 max-w-[130px] gap-1">
             <button onClick={handleNextTurn} className="bg-neutral-800 border border-neutral-600 rounded px-3 py-1 text-white text-[9px] font-bold uppercase tracking-wider active:scale-95 w-full flex justify-between items-center transition-colors hover:bg-neutral-700">
-              <span>Turn {turnCount}</span><span>➔</span>
+              <span>{t(lang, 'turn')} {turnCount}</span><span>➔</span>
             </button>
             <div className="flex w-full gap-1">
-              <button onClick={() => setFirstPlayer('p2')} className={`flex-1 rounded text-[8px] font-bold p-0.5 border transition-colors ${firstPlayer === 'p2' ? 'bg-amber-600 border-amber-400 text-white shadow-[0_0_10px_rgba(217,119,6,0.5)]' : 'bg-neutral-900 border-neutral-700 text-neutral-500'}`}>P2 First</button>
-              <button onClick={() => setFirstPlayer('p1')} className={`flex-1 rounded text-[8px] font-bold p-0.5 border transition-colors ${firstPlayer === 'p1' ? 'bg-amber-600 border-amber-400 text-white shadow-[0_0_10px_rgba(217,119,6,0.5)]' : 'bg-neutral-900 border-neutral-700 text-neutral-500'}`}>P1 First</button>
+              <button onClick={() => setFirstPlayer('p2')} className={`flex-1 rounded text-[7px] font-bold p-0.5 border transition-colors ${firstPlayer === 'p2' ? 'bg-amber-600 border-amber-400 text-white shadow-[0_0_10px_rgba(217,119,6,0.5)]' : 'bg-neutral-900 border-neutral-700 text-neutral-500'}`}>{t(lang, 'p2First')}</button>
+              <button onClick={() => setFirstPlayer('p1')} className={`flex-1 rounded text-[7px] font-bold p-0.5 border transition-colors ${firstPlayer === 'p1' ? 'bg-amber-600 border-amber-400 text-white shadow-[0_0_10px_rgba(217,119,6,0.5)]' : 'bg-neutral-900 border-neutral-700 text-neutral-500'}`}>{t(lang, 'p1First')}</button>
             </div>
           </div>
 
@@ -315,13 +316,13 @@ export default function PTCGCounter() {
 
           {/* Coin Flipper - Matched width */}
           <div className="flex flex-col items-center justify-center flex-1 max-w-[130px]">
-            <button onClick={flipCoin} className={`w-full py-2 rounded font-black text-[10px] tracking-widest border-2 transition-all ${isFlipping ? 'scale-95 opacity-80 border-neutral-600 bg-neutral-800 animate-pulse text-neutral-400' : coinResult === 'HEADS' ? 'border-cyan-500 bg-cyan-950 text-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.4)]' : coinResult === 'TAILS' ? 'border-fuchsia-500 bg-fuchsia-950 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.4)]' : 'border-neutral-700 bg-neutral-900 text-neutral-300'}`}>
-              {isFlipping ? 'FLIP...' : coinResult === 'HEADS' ? 'HEADS' : coinResult === 'TAILS' ? 'TAILS' : 'FLIP COIN'}
+            <button onClick={flipCoin} className={`w-full py-2 rounded font-black text-[9px] tracking-widest border-2 transition-all ${isFlipping ? 'scale-95 opacity-80 border-neutral-600 bg-neutral-800 animate-pulse text-neutral-400' : coinResult === 'HEADS' ? 'border-cyan-500 bg-cyan-950 text-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.4)]' : coinResult === 'TAILS' ? 'border-fuchsia-500 bg-fuchsia-950 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.4)]' : 'border-neutral-700 bg-neutral-900 text-neutral-300'}`}>
+              {isFlipping ? t(lang, 'flipping') : coinResult === 'HEADS' ? t(lang, 'heads') : coinResult === 'TAILS' ? t(lang, 'tails') : t(lang, 'flipCoin')}
             </button>
           </div>
         </div>
 
-        {/* Strict AdSense Container */}
+        {/* Strict AdSense Container (Unchanged length) */}
         <div className="min-w-[320px] min-h-[50px] overflow-hidden bg-neutral-950 border border-dashed border-neutral-700/50 flex items-center justify-center rounded shrink-0">
           <span className="text-neutral-500 text-[10px] uppercase font-mono tracking-wider">
             Google AdSense Banner Container

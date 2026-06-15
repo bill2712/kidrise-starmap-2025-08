@@ -3,8 +3,8 @@ import Layout from '../layouts/Layout.astro';
 import PTCGCounter from '../components/PTCGCounter';
 ---
 
-<Layout title="PTCG Live Damage Counter & Match Assistant">
-  <main class="w-full min-h-screen bg-black flex items-center justify-center">
-    <PTCGCounter client:load />
-  </main>
+<Layout title="PTCG Companion">
+	<main class="w-full min-h-screen bg-black flex items-center justify-center">
+		<PTCGCounter lang="en" client:load />
+	</main>
 </Layout>
