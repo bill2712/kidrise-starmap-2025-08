@@ -23,6 +23,11 @@ const typeColors: Record<ElementType, string> = {
   Metal: 'bg-gray-400', Dragon: 'bg-yellow-700', Colorless: 'bg-slate-300', Stellar: 'bg-indigo-500'
 };
 
+const typeInitials: Record<ElementType, string> = {
+  None: '', Grass: 'G', Fire: 'F', Water: 'W', Lightning: 'L', Psychic: 'P', 
+  Fighting: 'Fg', Darkness: 'D', Metal: 'M', Dragon: 'R', Colorless: 'C', Stellar: 'S'
+};
+
 interface PlayerState {
   hp: number;
   poisoned: boolean;
@@ -174,10 +179,7 @@ export default function PTCGCounter() {
   const handleNextTurn = () => {
     fireFeedback();
     setTurnCount(prev => prev + 1);
-    // Reset turn-based states for BOTH players
     updatePlayer('p1', { abilityUsed: false, retreatUsed: false });
-    // updatePlayer internally pushes to history. Doing it twice is fine or we can just update both states manually.
-    // To prevent double history push if not needed, we just use state setter but updatePlayer handles it.
     setP2(prev => {
       setHistoryP2(h => [...h, prev].slice(-20));
       return { ...prev, abilityUsed: false, retreatUsed: false };
@@ -200,36 +202,47 @@ export default function PTCGCounter() {
         {/* Type Dock */}
         <div className="flex justify-between items-center w-full mb-1">
           <div className="flex gap-1">
-            <button onClick={() => updatePlayer(player, { activeType: 'None' })} className="w-4 h-4 rounded-full border border-neutral-700 bg-neutral-800 text-[8px] flex items-center justify-center text-neutral-500">x</button>
+            <button onClick={() => updatePlayer(player, { activeType: 'None' })} className="w-4 h-4 rounded-full border border-neutral-700 bg-neutral-800 text-[8px] flex items-center justify-center text-neutral-500 font-bold transition-all hover:bg-neutral-700">x</button>
             {types.map(t => (
               <button 
                 key={t} onClick={() => updatePlayer(player, { activeType: t })}
-                className={`w-4 h-4 rounded-full border border-neutral-900 shadow-sm transition-transform ${typeColors[t]} ${state.activeType === t ? 'scale-125 ring-1 ring-white' : 'opacity-50 grayscale-[50%]'}`}
-              />
+                className={`w-4 h-4 rounded-full border border-neutral-900 shadow-sm transition-all flex items-center justify-center text-[7px] font-black text-white/90 ${typeColors[t]} ${state.activeType === t ? 'scale-125 ring-1 ring-white' : 'opacity-50 grayscale-[50%]'}`}
+              >
+                {typeInitials[t]}
+              </button>
             ))}
           </div>
-          {historyLen > 0 && (
-            <button onClick={() => undoPlayer(player)} className="text-blue-400 text-[10px] font-bold tracking-widest uppercase border border-blue-900 bg-blue-950/30 px-2 rounded active:scale-95">Undo ↩</button>
-          )}
         </div>
 
         {/* HP Radar & Turn Mechanics */}
-        <div className="flex items-center justify-between w-full mt-1">
-          <div className={`bg-red-950 border-4 border-red-800 rounded-xl w-32 h-20 flex flex-col items-center justify-center shadow-inner relative transition-transform ${isAnim ? 'scale-110' : 'scale-100'}`}>
-            <span className="text-neutral-400 text-[8px] font-bold tracking-widest uppercase absolute top-1">Damage Counters</span>
-            <span className="text-5xl font-black font-mono tracking-tighter text-red-500 mt-2" style={{ textShadow: '0 0 15px rgba(239,68,68,0.5)' }}>
-              {state.hp}
-            </span>
-            <button onClick={() => updatePlayer(player, { hp: 0 })} className="absolute bottom-1 right-2 text-neutral-500 text-[8px] hover:text-white uppercase active:scale-95">Reset</button>
+        <div className="flex flex-col w-full mt-1">
+          <div className="flex items-center justify-between w-full mb-1">
+            <span className="text-neutral-500 text-[10px] tracking-widest font-bold uppercase">Damage Counters</span>
+            <button 
+              onClick={() => undoPlayer(player)} 
+              disabled={historyLen === 0}
+              className={`text-[9px] font-bold tracking-widest uppercase border px-2 py-0.5 rounded transition-all ${historyLen > 0 ? 'text-blue-400 border-blue-900 bg-blue-950/30 active:scale-95' : 'text-neutral-700 border-neutral-800 bg-transparent opacity-50'}`}
+            >
+              Undo ↩
+            </button>
           </div>
+          
+          <div className="flex items-center justify-between w-full">
+            <div className={`bg-red-950 border-4 rounded-xl w-32 h-20 flex flex-col items-center justify-center relative transition-all duration-300 ${state.hp > 0 ? 'border-red-400 shadow-[0_0_20px_rgba(220,38,38,0.6)] animate-pulse' : 'border-red-800 shadow-inner'} ${isAnim ? 'scale-110' : 'scale-100'}`}>
+              <span className="text-5xl font-black font-mono tracking-tighter text-red-500" style={{ textShadow: '0 0 15px rgba(239,68,68,0.5)' }}>
+                {state.hp}
+              </span>
+              <button onClick={() => updatePlayer(player, { hp: 0 })} className="absolute bottom-1 right-2 text-neutral-500 text-[8px] hover:text-white uppercase active:scale-95">Reset</button>
+            </div>
 
-          <div className="flex flex-col gap-1 w-28">
-            <button onClick={() => updatePlayer(player, { retreatUsed: !state.retreatUsed })} className={`h-9 rounded font-bold text-[9px] uppercase tracking-wider border transition-all ${state.retreatUsed ? 'bg-neutral-800 border-neutral-700 text-neutral-500 line-through' : 'bg-neutral-900 border-neutral-600 text-neutral-300'}`}>
-              Retreat Used
-            </button>
-            <button onClick={() => updatePlayer(player, { abilityUsed: !state.abilityUsed })} className={`h-9 rounded font-bold text-[9px] uppercase tracking-wider border transition-all ${state.abilityUsed ? 'bg-neutral-800 border-neutral-700 text-neutral-500 line-through' : 'bg-rose-950 border-rose-800 text-rose-400'}`}>
-              Ability (1/Turn)
-            </button>
+            <div className="flex flex-col gap-1 w-28">
+              <button onClick={() => updatePlayer(player, { retreatUsed: !state.retreatUsed })} className={`h-9 rounded font-bold text-[9px] uppercase tracking-wider border transition-all ${state.retreatUsed ? 'bg-neutral-800 border-neutral-700 text-neutral-500 line-through' : 'bg-neutral-900 border-neutral-600 text-neutral-300'}`}>
+                Retreat Used
+              </button>
+              <button onClick={() => updatePlayer(player, { abilityUsed: !state.abilityUsed })} className={`h-9 rounded font-bold text-[9px] uppercase tracking-wider border transition-all ${state.abilityUsed ? 'bg-neutral-800 border-neutral-700 text-neutral-500 line-through' : 'bg-rose-950 border-rose-800 text-rose-400'}`}>
+                Ability (1/Turn)
+              </button>
+            </div>
           </div>
         </div>
 
@@ -280,29 +293,29 @@ export default function PTCGCounter() {
       <div className="h-[110px] w-full flex flex-col justify-between items-center py-1 bg-neutral-950/90 backdrop-blur border-y border-neutral-900 shadow-2xl relative z-50">
         
         {/* Match Timer & Turn Info */}
-        <div className="flex items-center justify-between w-full px-2 h-[50px]">
+        <div className="flex items-center justify-between w-full px-2 h-[50px] gap-2">
           
-          {/* Turn Engine */}
-          <div className="flex flex-col items-center justify-center w-[100px] gap-1">
-            <button onClick={handleNextTurn} className="bg-neutral-800 border border-neutral-600 rounded px-2 py-1 text-white text-[9px] font-bold uppercase tracking-wider active:scale-95 w-full flex justify-between items-center">
+          {/* Turn Engine - Expanded width & padding */}
+          <div className="flex flex-col items-center justify-center flex-1 max-w-[130px] gap-1">
+            <button onClick={handleNextTurn} className="bg-neutral-800 border border-neutral-600 rounded px-3 py-1 text-white text-[9px] font-bold uppercase tracking-wider active:scale-95 w-full flex justify-between items-center transition-colors hover:bg-neutral-700">
               <span>Turn {turnCount}</span><span>➔</span>
             </button>
             <div className="flex w-full gap-1">
-              <button onClick={() => setFirstPlayer('p2')} className={`flex-1 rounded text-[7px] font-bold p-0.5 border ${firstPlayer === 'p2' ? 'bg-amber-600 border-amber-400 text-white' : 'bg-neutral-900 border-neutral-700 text-neutral-500'}`}>P2 First</button>
-              <button onClick={() => setFirstPlayer('p1')} className={`flex-1 rounded text-[7px] font-bold p-0.5 border ${firstPlayer === 'p1' ? 'bg-amber-600 border-amber-400 text-white' : 'bg-neutral-900 border-neutral-700 text-neutral-500'}`}>P1 First</button>
+              <button onClick={() => setFirstPlayer('p2')} className={`flex-1 rounded text-[8px] font-bold p-0.5 border transition-colors ${firstPlayer === 'p2' ? 'bg-amber-600 border-amber-400 text-white shadow-[0_0_10px_rgba(217,119,6,0.5)]' : 'bg-neutral-900 border-neutral-700 text-neutral-500'}`}>P2 First</button>
+              <button onClick={() => setFirstPlayer('p1')} className={`flex-1 rounded text-[8px] font-bold p-0.5 border transition-colors ${firstPlayer === 'p1' ? 'bg-amber-600 border-amber-400 text-white shadow-[0_0_10px_rgba(217,119,6,0.5)]' : 'bg-neutral-900 border-neutral-700 text-neutral-500'}`}>P1 First</button>
             </div>
           </div>
 
           {/* Central Clock */}
-          <div className="flex flex-col items-center justify-center">
+          <div className="flex flex-col items-center justify-center flex-shrink-0">
             <span onClick={() => { fireFeedback(); setIsTimerRunning(!isTimerRunning); }} className="text-xl font-mono tracking-widest font-extrabold text-amber-400 cursor-pointer active:scale-95 transition-transform" style={{ textShadow: '0 0 10px rgba(251,191,36,0.3)' }}>
               {formatTime(timeLeft)}
             </span>
           </div>
 
-          {/* Coin Flipper */}
-          <div className="flex flex-col items-center justify-center w-[100px]">
-            <button onClick={flipCoin} className={`w-full py-1 rounded font-black text-[10px] tracking-widest border-2 transition-all ${isFlipping ? 'scale-95 opacity-80 border-neutral-600 bg-neutral-800 animate-pulse text-neutral-400' : coinResult === 'HEADS' ? 'border-cyan-500 bg-cyan-950 text-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.4)]' : coinResult === 'TAILS' ? 'border-fuchsia-500 bg-fuchsia-950 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.4)]' : 'border-neutral-700 bg-neutral-900 text-neutral-300'}`}>
+          {/* Coin Flipper - Matched width */}
+          <div className="flex flex-col items-center justify-center flex-1 max-w-[130px]">
+            <button onClick={flipCoin} className={`w-full py-2 rounded font-black text-[10px] tracking-widest border-2 transition-all ${isFlipping ? 'scale-95 opacity-80 border-neutral-600 bg-neutral-800 animate-pulse text-neutral-400' : coinResult === 'HEADS' ? 'border-cyan-500 bg-cyan-950 text-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.4)]' : coinResult === 'TAILS' ? 'border-fuchsia-500 bg-fuchsia-950 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.4)]' : 'border-neutral-700 bg-neutral-900 text-neutral-300'}`}>
               {isFlipping ? 'FLIP...' : coinResult === 'HEADS' ? 'HEADS' : coinResult === 'TAILS' ? 'TAILS' : 'FLIP COIN'}
             </button>
           </div>
