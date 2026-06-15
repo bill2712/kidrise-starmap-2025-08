@@ -5,17 +5,17 @@ type ElementType = 'None' | 'Grass' | 'Fire' | 'Water' | 'Lightning' | 'Psychic'
 
 const elementThemeMap: Record<ElementType, string> = {
   None: 'border-neutral-800 shadow-none',
-  Grass: 'shadow-[0_0_20px_rgba(34,197,94,0.4)] border-green-500',
-  Fire: 'shadow-[0_0_20px_rgba(239,68,68,0.4)] border-red-500',
-  Water: 'shadow-[0_0_20px_rgba(59,130,246,0.4)] border-blue-500',
-  Lightning: 'shadow-[0_0_20px_rgba(234,179,8,0.4)] border-yellow-400',
-  Psychic: 'shadow-[0_0_20px_rgba(168,85,247,0.4)] border-purple-500',
-  Fighting: 'shadow-[0_0_20px_rgba(217,119,6,0.4)] border-amber-600',
-  Darkness: 'shadow-[0_0_20px_rgba(31,41,55,0.8)] border-gray-600',
-  Metal: 'shadow-[0_0_20px_rgba(156,163,175,0.4)] border-gray-400',
-  Dragon: 'shadow-[0_0_20px_rgba(202,138,4,0.4)] border-yellow-600',
-  Colorless: 'shadow-[0_0_20px_rgba(226,232,240,0.4)] border-slate-300',
-  Stellar: 'shadow-[0_0_20px_rgba(99,102,241,0.4)] border-indigo-400',
+  Grass: 'shadow-[inset_0_0_30px_rgba(34,197,94,0.15)] border-green-500',
+  Fire: 'shadow-[inset_0_0_30px_rgba(239,68,68,0.15)] border-red-500',
+  Water: 'shadow-[inset_0_0_30px_rgba(59,130,246,0.15)] border-blue-500',
+  Lightning: 'shadow-[inset_0_0_30px_rgba(234,179,8,0.15)] border-yellow-400',
+  Psychic: 'shadow-[inset_0_0_30px_rgba(168,85,247,0.15)] border-purple-500',
+  Fighting: 'shadow-[inset_0_0_30px_rgba(217,119,6,0.15)] border-amber-600',
+  Darkness: 'shadow-[inset_0_0_30px_rgba(31,41,55,0.4)] border-gray-600',
+  Metal: 'shadow-[inset_0_0_30px_rgba(156,163,175,0.15)] border-gray-400',
+  Dragon: 'shadow-[inset_0_0_30px_rgba(202,138,4,0.15)] border-yellow-600',
+  Colorless: 'shadow-[inset_0_0_30px_rgba(226,232,240,0.15)] border-slate-300',
+  Stellar: 'shadow-[inset_0_0_30px_rgba(99,102,241,0.15)] border-indigo-400',
 };
 
 const typeColors: Record<ElementType, string> = {
@@ -197,8 +197,16 @@ export default function PTCGCounter({ lang = 'en' }: { lang?: string }) {
 
     const types: ElementType[] = ['Grass', 'Fire', 'Water', 'Lightning', 'Psychic', 'Fighting', 'Darkness', 'Metal', 'Dragon', 'Colorless', 'Stellar'];
 
+    // Layered Status Ring overlay logic
+    let statusRing = '';
+    if (state.poisoned) statusRing = 'ring-4 ring-green-500/80 animate-pulse shadow-[0_0_25px_rgba(34,197,94,0.6)]';
+    else if (state.burned) statusRing = 'ring-4 ring-orange-500/80 animate-pulse shadow-[0_0_25px_rgba(249,115,22,0.6)]';
+    else if (state.paralyzed) statusRing = 'ring-4 ring-yellow-500/80 animate-pulse shadow-[0_0_25px_rgba(234,179,8,0.6)]';
+    else if (state.asleep) statusRing = 'ring-4 ring-blue-500/80 animate-pulse shadow-[0_0_25px_rgba(59,130,246,0.6)]';
+    else if (state.confused) statusRing = 'ring-4 ring-purple-500/80 animate-pulse shadow-[0_0_25px_rgba(168,85,247,0.6)]';
+
     return (
-      <div className={`flex-1 flex flex-col justify-between p-3 m-2 bg-gradient-to-b from-neutral-900 to-neutral-950 border-2 rounded-2xl relative transition-all duration-300 ${elementThemeMap[state.activeType]} ${isRotated ? 'rotate-180' : ''}`}>
+      <div className={`flex-1 flex flex-col justify-between p-3 m-2 bg-gradient-to-b from-neutral-900 to-neutral-950 border-2 rounded-2xl relative transition-all duration-300 ${elementThemeMap[state.activeType]} ${statusRing} ${isRotated ? 'rotate-180' : ''}`}>
         
         {/* Type Dock */}
         <div className="flex justify-between items-center w-full mb-1">
@@ -233,7 +241,7 @@ export default function PTCGCounter({ lang = 'en' }: { lang?: string }) {
               <span className="text-5xl font-black font-mono tracking-tighter text-red-500" style={{ textShadow: '0 0 15px rgba(239,68,68,0.5)' }}>
                 {state.hp}
               </span>
-              <button onClick={() => updatePlayer(player, { hp: 0 })} className="absolute bottom-1 right-2 text-neutral-500 text-[8px] hover:text-white uppercase active:scale-95">{t(lang, 'reset')}</button>
+              <button onClick={() => updatePlayer(player, { hp: 0 })} className="absolute bottom-2 right-3 text-neutral-500 text-[8px] hover:text-white uppercase active:scale-95 font-bold transition-colors">{t(lang, 'reset')}</button>
             </div>
 
             <div className="flex flex-col gap-1 w-28">
@@ -267,11 +275,11 @@ export default function PTCGCounter({ lang = 'en' }: { lang?: string }) {
 
         {/* Status Conditions */}
         <div className="grid grid-cols-5 gap-1 w-full mt-2">
-          <button onClick={() => updatePlayer(player, { poisoned: !state.poisoned })} className={`h-8 rounded-lg font-bold text-[7px] sm:text-[8px] uppercase tracking-wider border ${state.poisoned ? 'shadow-[0_0_15px_rgba(34,197,94,0.6)] border-green-500 bg-green-950/40 text-green-400' : 'border-neutral-800 bg-neutral-900 text-neutral-600'}`}>{t(lang, 'poison')}</button>
-          <button onClick={() => updatePlayer(player, { burned: !state.burned })} className={`h-8 rounded-lg font-bold text-[7px] sm:text-[8px] uppercase tracking-wider border ${state.burned ? 'shadow-[0_0_15px_rgba(249,115,22,0.6)] border-orange-500 bg-orange-950/40 text-orange-400' : 'border-neutral-800 bg-neutral-900 text-neutral-600'}`}>{t(lang, 'burn')}</button>
-          <button onClick={() => updatePlayer(player, { asleep: !state.asleep })} className={`h-8 rounded-lg font-bold text-[7px] sm:text-[8px] uppercase tracking-wider border ${state.asleep ? 'shadow-[0_0_15px_rgba(59,130,246,0.6)] border-blue-500 bg-blue-950/40 text-blue-400' : 'border-neutral-800 bg-neutral-900 text-neutral-600'}`}>{t(lang, 'asleep')}</button>
-          <button onClick={() => updatePlayer(player, { paralyzed: !state.paralyzed })} className={`h-8 rounded-lg font-bold text-[7px] sm:text-[8px] uppercase tracking-wider border ${state.paralyzed ? 'shadow-[0_0_15px_rgba(234,179,8,0.6)] border-yellow-500 bg-yellow-950/40 text-yellow-400' : 'border-neutral-800 bg-neutral-900 text-neutral-600'}`}>{t(lang, 'para')}</button>
-          <button onClick={() => updatePlayer(player, { confused: !state.confused })} className={`h-8 rounded-lg font-bold text-[7px] sm:text-[8px] uppercase tracking-wider border ${state.confused ? 'shadow-[0_0_15px_rgba(168,85,247,0.6)] border-purple-500 bg-purple-950/40 text-purple-400' : 'border-neutral-800 bg-neutral-900 text-neutral-600'}`}>{t(lang, 'confuse')}</button>
+          <button onClick={() => updatePlayer(player, { poisoned: !state.poisoned })} className={`h-8 rounded-lg font-bold text-[7px] sm:text-[8px] uppercase tracking-wider border transition-colors ${state.poisoned ? 'shadow-[0_0_15px_rgba(34,197,94,0.6)] border-green-400 bg-green-500 text-white' : 'border-neutral-800 bg-neutral-900 text-neutral-400'}`}>{t(lang, 'poison')}</button>
+          <button onClick={() => updatePlayer(player, { burned: !state.burned })} className={`h-8 rounded-lg font-bold text-[7px] sm:text-[8px] uppercase tracking-wider border transition-colors ${state.burned ? 'shadow-[0_0_15px_rgba(249,115,22,0.6)] border-orange-400 bg-orange-500 text-white' : 'border-neutral-800 bg-neutral-900 text-neutral-400'}`}>{t(lang, 'burn')}</button>
+          <button onClick={() => updatePlayer(player, { asleep: !state.asleep })} className={`h-8 rounded-lg font-bold text-[7px] sm:text-[8px] uppercase tracking-wider border transition-colors ${state.asleep ? 'shadow-[0_0_15px_rgba(59,130,246,0.6)] border-blue-400 bg-blue-500 text-white' : 'border-neutral-800 bg-neutral-900 text-neutral-400'}`}>{t(lang, 'asleep')}</button>
+          <button onClick={() => updatePlayer(player, { paralyzed: !state.paralyzed })} className={`h-8 rounded-lg font-bold text-[7px] sm:text-[8px] uppercase tracking-wider border transition-colors ${state.paralyzed ? 'shadow-[0_0_15px_rgba(234,179,8,0.6)] border-yellow-400 bg-yellow-500 text-white' : 'border-neutral-800 bg-neutral-900 text-neutral-400'}`}>{t(lang, 'para')}</button>
+          <button onClick={() => updatePlayer(player, { confused: !state.confused })} className={`h-8 rounded-lg font-bold text-[7px] sm:text-[8px] uppercase tracking-wider border transition-colors ${state.confused ? 'shadow-[0_0_15px_rgba(168,85,247,0.6)] border-purple-400 bg-purple-500 text-white' : 'border-neutral-800 bg-neutral-900 text-neutral-400'}`}>{t(lang, 'confuse')}</button>
         </div>
 
         {/* Legacy Markers */}
@@ -296,7 +304,7 @@ export default function PTCGCounter({ lang = 'en' }: { lang?: string }) {
         {/* Match Timer & Turn Info */}
         <div className="flex items-center justify-between w-full px-2 h-[50px] gap-2">
           
-          {/* Turn Engine - Expanded width & padding */}
+          {/* Turn Engine */}
           <div className="flex flex-col items-center justify-center flex-1 max-w-[130px] gap-1">
             <button onClick={handleNextTurn} className="bg-neutral-800 border border-neutral-600 rounded px-3 py-1 text-white text-[9px] font-bold uppercase tracking-wider active:scale-95 w-full flex justify-between items-center transition-colors hover:bg-neutral-700">
               <span>{t(lang, 'turn')} {turnCount}</span><span>➔</span>
@@ -314,7 +322,7 @@ export default function PTCGCounter({ lang = 'en' }: { lang?: string }) {
             </span>
           </div>
 
-          {/* Coin Flipper - Matched width */}
+          {/* Coin Flipper */}
           <div className="flex flex-col items-center justify-center flex-1 max-w-[130px]">
             <button onClick={flipCoin} className={`w-full py-2 rounded font-black text-[9px] tracking-widest border-2 transition-all ${isFlipping ? 'scale-95 opacity-80 border-neutral-600 bg-neutral-800 animate-pulse text-neutral-400' : coinResult === 'HEADS' ? 'border-cyan-500 bg-cyan-950 text-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.4)]' : coinResult === 'TAILS' ? 'border-fuchsia-500 bg-fuchsia-950 text-fuchsia-400 shadow-[0_0_10px_rgba(217,70,239,0.4)]' : 'border-neutral-700 bg-neutral-900 text-neutral-300'}`}>
               {isFlipping ? t(lang, 'flipping') : coinResult === 'HEADS' ? t(lang, 'heads') : coinResult === 'TAILS' ? t(lang, 'tails') : t(lang, 'flipCoin')}
@@ -322,10 +330,10 @@ export default function PTCGCounter({ lang = 'en' }: { lang?: string }) {
           </div>
         </div>
 
-        {/* Strict AdSense Container (Unchanged length) */}
-        <div className="min-w-[320px] min-h-[50px] overflow-hidden bg-neutral-950 border border-dashed border-neutral-700/50 flex items-center justify-center rounded shrink-0">
-          <span className="text-neutral-500 text-[10px] uppercase font-mono tracking-wider">
-            Google AdSense Banner Container
+        {/* Strict AdSense Container (Solid rigid background) */}
+        <div className="w-[320px] h-[50px] overflow-hidden bg-neutral-900 flex items-center justify-center rounded shrink-0 relative">
+          <span className="text-neutral-500 text-[10px] uppercase font-mono tracking-wider absolute">
+            Google AdSense Banner
           </span>
         </div>
       </div>
